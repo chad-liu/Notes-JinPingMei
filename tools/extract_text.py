@@ -22,6 +22,13 @@ from bs4 import BeautifulSoup
 EPUB = Path(r"D:\Notes-JinPingMei\books\金瓶梅(崇禎本).epub")
 OUT = Path(__file__).resolve().parent / "build" / "chapters.json"
 
+# 底本輸入時，國標碼表所缺的漢字一律以「［偏旁 部件］」註明。
+# 這裡把已考訂出對應 Unicode 字的還原回去；未列入的仍維持原樣。
+MISSING_GLYPHS = {
+    "［入日］": "㒲",
+    "［走多］": "趍",
+}
+
 CHAPTER_RE = re.compile(r"^第([零一二三四五六七八九十百]+)回$")
 APPENDIX_MARK = "附錄"
 DIGITS = {"零": 0, "一": 1, "二": 2, "三": 3, "四": 4,
@@ -39,9 +46,11 @@ def zh_number(text: str) -> int:
 
 
 def clean(text: str) -> str:
-    """去掉 PDF 轉檔殘留的換行空白，保留原書全形標點。"""
+    """去掉 PDF 轉檔殘留的換行空白，還原缺字標記，保留原書全形標點。"""
     text = text.replace("\u3000", "")
     text = re.sub(r"\s+", "", text)
+    for marker, glyph in MISSING_GLYPHS.items():
+        text = text.replace(marker, glyph)
     return text.strip()
 
 

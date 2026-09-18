@@ -10,7 +10,7 @@ window.DEMO_JSON["data/statistics.json"] = {
   "total_chapters": 100,
   "total_paragraphs": 3491,
   "total_sentences": 32571,
-  "total_chars": 750133,
+  "total_chars": 750049,
   "total_entities": 235,
   "total_occurrences": 31707
  },
@@ -41,7 +41,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 4,
    "title": "赴巫山潘氏幽歡　鬧茶坊鄆哥義憤",
    "paragraph_count": 33,
-   "char_count": 4338
+   "char_count": 4335
   },
   {
    "chapter_id": "jinpingmei_ch005",
@@ -62,7 +62,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 7,
    "title": "薛媒婆說娶孟三兒　楊姑娘氣罵張四舅",
    "paragraph_count": 21,
-   "char_count": 6443
+   "char_count": 6437
   },
   {
    "chapter_id": "jinpingmei_ch008",
@@ -104,7 +104,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 13,
    "title": "李瓶姐牆頭密約　迎春兒隙底私窺",
    "paragraph_count": 32,
-   "char_count": 6606
+   "char_count": 6600
   },
   {
    "chapter_id": "jinpingmei_ch014",
@@ -125,7 +125,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 16,
    "title": "西門慶擇吉佳期　應伯爵追歡喜慶",
    "paragraph_count": 22,
-   "char_count": 6839
+   "char_count": 6833
   },
   {
    "chapter_id": "jinpingmei_ch017",
@@ -174,21 +174,21 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 23,
    "title": "賭棋枰瓶兒輸鈔　覷藏春潘氏潛蹤",
    "paragraph_count": 24,
-   "char_count": 6853
+   "char_count": 6850
   },
   {
    "chapter_id": "jinpingmei_ch024",
    "chapter_number": 24,
    "title": "敬濟元夜戲嬌姿　惠祥怒詈來旺婦",
    "paragraph_count": 18,
-   "char_count": 5837
+   "char_count": 5834
   },
   {
    "chapter_id": "jinpingmei_ch025",
    "chapter_number": 25,
    "title": "吳月娘春晝鞦韆　來旺兒醉中謗仙",
    "paragraph_count": 20,
-   "char_count": 6423
+   "char_count": 6417
   },
   {
    "chapter_id": "jinpingmei_ch026",
@@ -202,14 +202,14 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 27,
    "title": "李瓶兒私語翡翠軒　潘金蓮醉鬧葡萄架",
    "paragraph_count": 50,
-   "char_count": 6511
+   "char_count": 6505
   },
   {
    "chapter_id": "jinpingmei_ch028",
    "chapter_number": 28,
    "title": "陳敬濟徼倖得金蓮　西門慶糊塗打鐵棍",
    "paragraph_count": 21,
-   "char_count": 5457
+   "char_count": 5454
   },
   {
    "chapter_id": "jinpingmei_ch029",
@@ -230,14 +230,14 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 31,
    "title": "琴童兒藏壺構釁　西門慶開宴為歡",
    "paragraph_count": 23,
-   "char_count": 7550
+   "char_count": 7547
   },
   {
    "chapter_id": "jinpingmei_ch032",
    "chapter_number": 32,
    "title": "李桂姐趨炎認女　潘金蓮懷妒驚兒",
    "paragraph_count": 12,
-   "char_count": 6880
+   "char_count": 6877
   },
   {
    "chapter_id": "jinpingmei_ch033",
@@ -258,7 +258,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 35,
    "title": "西門慶為男寵報仇　書童兒作女妝媚客",
    "paragraph_count": 33,
-   "char_count": 12395
+   "char_count": 12389
   },
   {
    "chapter_id": "jinpingmei_ch036",
@@ -279,7 +279,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 38,
    "title": "王六兒棒槌打搗鬼　潘金蓮雪夜弄琵琶",
    "paragraph_count": 44,
-   "char_count": 6451
+   "char_count": 6445
   },
   {
    "chapter_id": "jinpingmei_ch039",
@@ -363,14 +363,14 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 50,
    "title": "琴童潛聽燕鶯歡　玳安嬉遊蝴蝶巷",
    "paragraph_count": 24,
-   "char_count": 6040
+   "char_count": 6034
   },
   {
    "chapter_id": "jinpingmei_ch051",
    "chapter_number": 51,
    "title": "打貓兒金蓮品玉　鬥葉子敬濟輸金",
    "paragraph_count": 41,
-   "char_count": 12384
+   "char_count": 12378
   },
   {
    "chapter_id": "jinpingmei_ch052",
@@ -440,7 +440,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 61,
    "title": "西門慶乘醉燒陰戶　李瓶兒帶病宴重陽",
    "paragraph_count": 49,
-   "char_count": 12424
+   "char_count": 12418
   },
   {
    "chapter_id": "jinpingmei_ch062",
@@ -489,7 +489,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_number": 68,
    "title": "應伯爵戲銜玉臂　玳安兒密訪蜂媒",
    "paragraph_count": 36,
-   "char_count": 10719
+   "char_count": 10713
   },
   {
    "chapter_id": "jinpingmei_ch069",
