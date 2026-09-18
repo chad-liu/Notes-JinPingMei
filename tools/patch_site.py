@@ -94,12 +94,10 @@ INDEX = [
         <div id="peopleList" class="people-grid"></div>
       </div>
       <div id="peopleChart" class="people-pane">
-        <p class="meta">依 1987 年手繪原圖轉繪，排列順序與原圖一致（由上而下、由左而右）。
-          原圖右下角另有二名人物遭浮水印遮蔽，無法辨識，故從缺。
-          <a id="peopleChartLink" target="_blank" rel="noopener">另開原圖</a></p>
         <div class="chart-zoom">
           <button type="button" class="active" data-chart-fit="fit">符合寬度</button>
           <button type="button" data-chart-fit="full">原寸</button>
+          <a id="peopleChartLink" target="_blank" rel="noopener">另開原圖</a>
         </div>
         <div class="chart-frame"><img id="peopleChartImg" alt="《金瓶梅》人物關係簡圖"></div>
       </div>
@@ -556,9 +554,9 @@ CSS = [
     .people-tab.active { background: #ffe4e6; color: #9f1239; }
     .people-pane { display: none; }
     .people-pane.active { display: block; }
-    #peopleChart .meta { margin: 14px 0 0; line-height: 1.7; }
-    #peopleChart .meta a { color: #9f1239; }
-    .chart-zoom { display: inline-flex; gap: 8px; margin: 10px 0 12px; }
+    .chart-zoom { display: inline-flex; align-items: center; gap: 10px; margin: 16px 0 12px; }
+    .chart-zoom a { color: #9f1239; font-size: 13px; text-decoration: none; border-bottom: 1px solid #fecdd3; }
+    .chart-zoom a:hover { border-bottom-color: #9f1239; }
     .chart-zoom button { border: 1px solid #d0d7de; background: #fff; border-radius: 999px; color: #64748b; cursor: pointer; padding: 4px 12px; font: inherit; font-size: 13px; }
     .chart-zoom button.active { border-color: #f9a8b4; color: #9f1239; }
     .chart-frame { border: 1px solid var(--border); border-radius: 8px; background: #fbf8f1; overflow: auto; max-height: 80vh; margin-bottom: 40px; }
