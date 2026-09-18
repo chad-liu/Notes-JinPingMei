@@ -117,10 +117,9 @@ def main() -> None:
         return
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from write_glyph_list import APPLIED, HAS_RARE, ONLY_COMMON
+    from write_glyph_list import APPLIED, ONLY_COMMON
 
-    groups = [("依原刻還原", APPLIED), ("擴充H有字但用通行字", HAS_RARE),
-              ("只能用通行字", ONLY_COMMON)]
+    groups = [("依原刻還原", APPLIED), ("只能用通行字", ONLY_COMMON)]
     for title, rows in groups:
         print(f"===== {title} =====")
         for marker, glyph, _common, _basis, _note in rows:
