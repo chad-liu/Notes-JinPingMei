@@ -59,9 +59,11 @@ node tools/smoke_test.js   # 驗證輸出是否符合前端讀取的欄位
 其中 35 種、125 處已還原成 Unicode 字（對照表在 `tools/extract_text.py` 的 `MISSING_GLYPHS`，
 補一行再重跑 `extract_text.py` 與 `build_data.py` 即可生效）。
 
-`data/修改字.txt` 是完整的考訂清單，依據分三級：以梅節夢梅館校本《金瓶梅詞話》
-平行段落比對而得者標「詞話」，構字與辭例俱合者標「構字」，
-詞話本該處亦無字、Unicode 亦查無該字形者標「待考」。
+`data/修改字.txt` 是完整的考訂清單，另有 20 種、30 處已查到對應字但尚未套用，
+16 種、22 處整個 IDS 資料庫都查不到相符字形。考訂依據分三種：
+用 CJK IDS 部件資料庫反查而字形完全相符者標「構字」（`tools/ids_lookup.py`），
+以梅節夢梅館校本《金瓶梅詞話》平行段落比對而得者標「詞話」（`tools/resolve_glyphs.py`），
+由上下文成詞判定者標「辭例」。
 
 還原的字裡有一個「𢵞」（U+22D5E）在 BMP 之外。Python 算一個字、JavaScript 的
 `slice` 算兩個碼元，因此 `build_data.py` 會把實體位移換算成 UTF-16 碼元再輸出；

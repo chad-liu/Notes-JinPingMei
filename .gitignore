@@ -5,3 +5,4 @@ data/金瓶梅人物表.jpg
 # 建置中間產物
 tools/build/
 tools/__pycache__/
+tools/build/ids.txt
