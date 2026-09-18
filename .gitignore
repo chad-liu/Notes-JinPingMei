@@ -6,3 +6,4 @@ data/金瓶梅人物表.jpg
 tools/build/
 tools/__pycache__/
 tools/build/ids.txt
+tools/build/IDS-UCS-*.txt
