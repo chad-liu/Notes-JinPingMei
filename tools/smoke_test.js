@@ -22,7 +22,6 @@ const stats = read('statistics.json');
 const network = read('person_social_network.json');
 const rels = read('person_relationships.json');
 const search = read('search_index.json');
-const articles = read('articles.json');
 
 console.log('ebook.json');
 check('章回 100 回', ebook.chapters.length === 100);
@@ -112,10 +111,6 @@ check('意象統計欄位齊全',
   stats.motif_summary.every(r => r.subtype && r.motif_type && typeof r.count === 'number'));
 check('關係／陣營統計存在',
   stats.relation_summary.length > 0 && stats.family_summary.length > 0);
-
-console.log('\narticles.json');
-check('延伸閱讀有資料', articles.articles.length > 0 &&
-  articles.articles.every(a => a.title && a.abstract));
 
 console.log('\n*.json.js 對照');
 for (const name of fs.readdirSync(DATA).filter(f => f.endsWith('.json'))) {

@@ -112,7 +112,15 @@ INDEX = [
     ('<h2>NER 類型統計</h2>', '<h2>實體類型統計</h2>'),
 
     # ---- 延伸閱讀區塊 ----
-    ('<h2>探索：研究文章</h2>', '<h2>延伸閱讀</h2>\n      <p class="meta">以下書目是本站人物簡介與詮釋角度的主要參考。</p>'),
+    ("""  <section id="articles" class="view">
+    <article class="content">
+      <h2>探索：研究文章</h2>
+      <div id="articleList"></div>
+    </article>
+  </section>""",
+     """  <section id="articles" class="view">
+    <iframe class="graph-frame article-frame" src="articles/花甲美魔男之斜批金瓶梅.html" title="花甲美魔男之斜批金瓶梅"></iframe>
+  </section>"""),
 
     # ---- 頁尾 ----
     ('<footer class="site-footer">本站為實驗性網站，使用 Codex 協作完成。</footer>',
@@ -126,8 +134,10 @@ INDEX = [
     # ---- 載入延伸閱讀 ----
     ("""  if (viewId === 'stats') await ensureStats();""",
      """  if (viewId === 'stats') await ensureStats();
-  if (viewId === 'people') await ensurePeople();
-  if (viewId === 'articles') await ensureArticles();"""),
+  if (viewId === 'people') await ensurePeople();"""),
+
+    ("""  document.body.classList.toggle('graph-view', viewId === 'network' || viewId === 'coGraph');""",
+     """  document.body.classList.toggle('graph-view', viewId === 'network' || viewId === 'coGraph' || viewId === 'articles');"""),
     ("""function showLoadError(err) {""",
      """async function ensurePeople() {
   if (state.peopleReady) return;
@@ -137,13 +147,6 @@ INDEX = [
   ]);
   initPeople();
   state.peopleReady = true;
-}
-
-async function ensureArticles() {
-  if (state.articlesReady) return;
-  state.articles = await loadJson('data/articles.json');
-  initArticles();
-  state.articlesReady = true;
 }
 
 function showLoadError(err) {"""),
@@ -555,6 +558,9 @@ CSS = [
     .people-tab.active { background: #ffe4e6; color: #9f1239; }
     .people-pane { display: none; }
     .people-pane.active { display: block; }
+    #articles.view.active { display: block; min-height: calc(100vh - 98px); }
+    #articles { background: #1a1a2e; line-height: 0; }
+    .article-frame { background: #1a1a2e; }
     .chart-zoom { display: inline-flex; align-items: center; gap: 10px; margin: 16px 0 12px; }
     .chart-zoom a { color: #9f1239; font-size: 13px; text-decoration: none; border-bottom: 1px solid #fecdd3; }
     .chart-zoom a:hover { border-bottom-color: #9f1239; }

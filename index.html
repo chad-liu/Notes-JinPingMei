@@ -135,11 +135,7 @@
   </section>
 
   <section id="articles" class="view">
-    <article class="content">
-      <h2>延伸閱讀</h2>
-      <p class="meta">以下書目是本站人物簡介與詮釋角度的主要參考。</p>
-      <div id="articleList"></div>
-    </article>
+    <iframe class="graph-frame article-frame" src="articles/花甲美魔男之斜批金瓶梅.html" title="花甲美魔男之斜批金瓶梅"></iframe>
   </section>
 </main>
 <footer class="site-footer">《金瓶梅》崇禎本會校足本．全文一百回．版面與資料結構參考 <a href="https://github.com/cclintw/red-chamber-dream" target="_blank" rel="noopener">紅樓夢知識圖譜</a>。實體標註出自人工詞表，僅供研究參考。</footer>
@@ -210,11 +206,10 @@ async function switchView(viewId) {
   if (viewId === 'search') await ensureSearch();
   if (viewId === 'stats') await ensureStats();
   if (viewId === 'people') await ensurePeople();
-  if (viewId === 'articles') await ensureArticles();
   document.querySelectorAll('header nav button').forEach(b => b.classList.toggle('active', b.dataset.view === viewId));
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === viewId));
   document.body.classList.toggle('reader-view', viewId === 'reader');
-  document.body.classList.toggle('graph-view', viewId === 'network' || viewId === 'coGraph');
+  document.body.classList.toggle('graph-view', viewId === 'network' || viewId === 'coGraph' || viewId === 'articles');
   updateReaderToggleAvailability();
   if (viewId === 'stats') animateStatNumbers();
   if ((viewId === 'network' || viewId === 'coGraph') && !wasActive) reloadGraphFrame(viewId);
@@ -257,13 +252,6 @@ async function ensurePeople() {
   ]);
   initPeople();
   state.peopleReady = true;
-}
-
-async function ensureArticles() {
-  if (state.articlesReady) return;
-  state.articles = await loadJson('data/articles.json');
-  initArticles();
-  state.articlesReady = true;
 }
 
 function showLoadError(err) {
