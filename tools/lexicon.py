@@ -904,7 +904,8 @@ PLACES: list[dict] = [
 TITLE_ROLES: list[dict] = [
     {"id": "role_daguanren", "name": "大官人", "subtype": "title", "aliases": []},
     {"id": "role_niangzi", "name": "娘子", "subtype": "title", "aliases": []},
-    {"id": "role_furen", "name": "婦人", "subtype": "title", "aliases": []},
+    {"id": "role_furen", "name": "婦人", "subtype": "title", "aliases": [],
+     "bio": "敘事上指稱「當場那個女人」的慣用語，隨場景轉換對象，不是任何人的專稱。全書 1,436 處中約六成指潘金蓮，李瓶兒、王六兒各約一成，另有宋蕙蓮、孟玉樓、林太太、賁四嫂等，也有「世上婦人」「眾婦人」這類泛稱。稽核腳本見 tools/check_furen.py。"},
     {"id": "role_yahuan", "name": "丫鬟", "subtype": "role", "aliases": ["丫頭"]},
     {"id": "role_xiaosi", "name": "小廝", "subtype": "role", "aliases": []},
     {"id": "role_huoji", "name": "夥計", "subtype": "role", "aliases": ["伙計"]},
