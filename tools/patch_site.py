@@ -374,7 +374,7 @@ function mergeData(network, relationships) {
     ('<label>最低共現權重 <input id="minWeight" type="number" min="1" value="40"></label>',
      '<label>最低共現權重 <input id="minWeight" type="number" min="1" value="20"></label>'),
     ('<select id="nodeLimit"><option>20</option><option selected>35</option><option>48</option></select>',
-     '<select id="nodeLimit"><option>20</option><option>40</option><option selected>60</option><option>100</option><option>150</option></select>'),
+     '<select id="nodeLimit"><option>20</option><option>40</option><option selected>60</option><option>100</option><option>200</option><option>300</option></select>'),
     ('placeholder="輸入姓名（例：賈寶玉 / 林黛玉）"', 'placeholder="輸入姓名（例：西門慶 / 潘金蓮）"'),
     ('<span class="line-sample rel-marriage"></span> 婚姻/婚配', '<span class="line-sample rel-marriage"></span> 婚配'),
     ('<span class="line-sample rel-romance"></span> 情感', '<span class="line-sample rel-romance"></span> 私通／情感'),
