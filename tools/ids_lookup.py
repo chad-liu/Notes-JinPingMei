@@ -35,6 +35,7 @@ ALIASES = {
     "⺼": "月", "肉": "月",
     "訁": "言", "讠": "言",
     "釆": "采",
+    "爭": "争", "為": "為",   # IDS 用的是「争」這類字形
 }
 
 
@@ -106,9 +107,9 @@ def main() -> None:
         return
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from write_glyph_list import APPLIED, FOUND, NOT_FOUND
+    from write_glyph_list import APPLIED, NOT_FOUND
 
-    groups = [("已還原", APPLIED), ("已查到未套用", FOUND), ("查無", NOT_FOUND)]
+    groups = [("已還原", APPLIED), ("查無", NOT_FOUND)]
     for title, rows in groups:
         print(f"===== {title} =====")
         for marker, glyph, _common, _basis, _note in rows:

@@ -56,14 +56,15 @@ node tools/smoke_test.js   # 驗證輸出是否符合前端讀取的欄位
 ### 缺字處理
 
 底本輸入時，凡國標碼表所缺的漢字一律寫成「［偏旁 部件］」，全書 71 種、177 處。
-其中 35 種、125 處已還原成 Unicode 字（對照表在 `tools/extract_text.py` 的 `MISSING_GLYPHS`，
-補一行再重跑 `extract_text.py` 與 `build_data.py` 即可生效）。
+其中 55 種、155 處已還原成 Unicode 字（對照表在 `tools/extract_text.py` 的 `MISSING_GLYPHS`，
+補一行再重跑 `extract_text.py` 與 `build_data.py` 即可生效）；
+其餘 16 種、22 處整個 IDS 資料庫都查不到相符字形，維持標記原樣。
 
-`data/修改字.txt` 是完整的考訂清單，另有 20 種、30 處已查到對應字但尚未套用，
-16 種、22 處整個 IDS 資料庫都查不到相符字形。考訂依據分三種：
-用 CJK IDS 部件資料庫反查而字形完全相符者標「構字」（`tools/ids_lookup.py`），
-以梅節夢梅館校本《金瓶梅詞話》平行段落比對而得者標「詞話」（`tools/resolve_glyphs.py`），
-由上下文成詞判定者標「辭例」。
+`data/修改字.txt` 是完整的考訂清單。考訂依據分三種：用 CJK IDS 部件資料庫反查、
+字形與原註完全相符者標「構字」（`tools/ids_lookup.py`），以梅節夢梅館校本
+《金瓶梅詞話》平行段落比對而得者標「詞話」（`tools/resolve_glyphs.py`），
+由上下文成詞判定者標「辭例」。清單另有「通行字」一欄：崇禎本刻異體或借字時
+（如 𫄉綢／潞綢、𧤀角／犄角），正文依原刻取字，檢索時可改用通行字。
 
 還原的字裡有一個「𢵞」（U+22D5E）在 BMP 之外。Python 算一個字、JavaScript 的
 `slice` 算兩個碼元，因此 `build_data.py` 會把實體位移換算成 UTF-16 碼元再輸出；
