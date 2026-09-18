@@ -5,28 +5,32 @@
   構字  標記所述偏旁部件與該 Unicode 字完全相符，且辭例可通
   待考  詞話本該處亦無字，或所述構字在 Unicode 無對應字位
 
-次數與章回一律由 tools/build/chapters.json 即時統計。
+次數與章回一律由 EPUB 即時重新解析統計，不靠手寫。
 """
 
 from __future__ import annotations
 
-import json
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BUILD = Path(__file__).resolve().parent / "build"
 OUT = ROOT / "data" / "修改字.txt"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # (標記, 對應字, 依據, 說明) —— 對應字留空表示尚未考訂出字
-# 已套用到正文的兩個字放在最前面
+# 第一批：使用者指定還原的字
 APPLIED = [
     ("［入日］", "㒲", "構字", "罵詈語，「賊㒲孃的」「是楊家那膫子㒲的」"),
     ("［走多］", "趍", "構字", "趕、驅，「又趍我」"),
+    ("［扌扉］", "𢵞", "構字", "擊、撞，「只顧𢵞打到幾時」「打鼓𢵞鈸」「極力𢵞磞」。詞話本此處無字"),
+    ("［足鹿］", "蹗", "構字", "「蹗街道兒」，與［足麗］（躧）同義異寫；詞話本作「躧」"),
+    ("［分鹿］", "麄", "構字", "「粗」之鹿部異體，「麄聲應道」；詞話本作「粗」"),
 ]
 
-CONFIRMED = [
+# 第二批：構字與辭例俱合，一併還原
+APPLIED += [
     ("［扌芻］", "搊", "詞話", "攙扶，「搊你去」「搊扶著下來」"),
     ("［足麗］", "躧", "詞話", "踩、踏，「把人躧到泥裡」"),
     ("［歹帶］", "殢", "詞話", "「殢雨尤雲」"),
@@ -68,12 +72,10 @@ VARIANT = [
     ("［涑鳥］", "鶒", "詞話", "「鸂鶒」，水鳥"),
     ("［足疊］", "蹀", "詞話", "與下字連用作「蹀躞」，行步貌"),
     ("［足褻］", "躞", "詞話", "詞話本此處作「蹀斜」"),
-    ("［足鹿］", "躧", "詞話", "詞話本作「躧街道兒」，與［足麗］同字異寫"),
     ("［石帶］", "帶", "詞話", "「山河帶礪」"),
     ("［艹曰羽］", "闒", "詞話", "「闒茸之材」，卑下無能"),
     ("［彳胤］", "胤", "詞話", "童天胤。清刻避雍正帝諱改形"),
     ("［“胤”換“丿”為“彳”］", "胤", "構字", "「續箕裘之胤嗣」。與［彳胤］同字，原註逕以文字描述"),
-    ("［分鹿］", "粗", "詞話", "詞話本作「粗聲應道」"),
     ("［角京］", "犄", "詞話", "詞話本作「兩個犄角的象」"),
     ("［髟丐］", "鬢", "詞話", "詞話本作「露著四鬢」"),
     ("［土幻］", "拗", "詞話", "詞話本作「胳膊倒拗過腿了」"),
@@ -88,7 +90,6 @@ VARIANT = [
 
 # 詞話本該處亦無字，辭例不明，待考
 PENDING = [
-    ("［扌扉］", "", "待考", "動詞，擊、撞：「你只顧［扌扉］打到幾時」「打鼓［扌扉］鈸」「極力［扌扉］磞」"),
     ("［糹堂］", "", "待考", "人名，文嫂之子「文［糹堂］」"),
     ("［扌欒］", "", "待考", "奏箏之動作，「［扌欒］箏歌板」「一個［扌欒］箏一個琵琶」"),
     ("［衤旋］", "", "待考", "衣物，「玉色紗［衤旋］兒」「沉香色［衤旋］褶」"),
@@ -107,30 +108,35 @@ PENDING = [
 ]
 
 SECTIONS = [
-    ("一、已套用至正文", APPLIED),
-    ("二、已考訂，構字與對應字相符", CONFIRMED),
-    ("三、崇禎本原刻為異體，Unicode 查無該字形；下列為通行本用字", VARIANT),
-    ("四、待考", PENDING),
+    ("一、已還原至正文", APPLIED),
+    ("二、崇禎本原刻為異體，Unicode 查無該字形；下列為通行本用字", VARIANT),
+    ("三、待考", PENDING),
 ]
 
 
 def survey() -> tuple[dict[str, int], dict[str, list[int]]]:
-    """統計每個標記的出現次數與所在章回。已套用的字改數該字本身。"""
-    data = json.loads((BUILD / "chapters.json").read_text(encoding="utf-8"))
+    """統計每個標記的出現次數與所在章回。
+
+    刻意關掉 MISSING_GLYPHS 重新解析一次——不能改數還原後的字，
+    因為有些字（如「搊」）原文本來就有，數字會多算。
+    """
+    import extract_text
+
+    saved = extract_text.MISSING_GLYPHS
+    extract_text.MISSING_GLYPHS = {}
+    try:
+        chapters = extract_text.parse_chapters()
+    finally:
+        extract_text.MISSING_GLYPHS = saved
+
     counts: dict[str, int] = defaultdict(int)
-    chapters: dict[str, set[int]] = defaultdict(set)
-    applied = {glyph: marker for marker, glyph, _, _ in APPLIED}
-    for ch in data["chapters"]:
+    chapter_set: dict[str, set[int]] = defaultdict(set)
+    for ch in chapters:
         for para in ch["paragraphs"]:
             for marker in re.findall(r"［[^］]*］", para["text"]):
                 counts[marker] += 1
-                chapters[marker].add(ch["n"])
-            for glyph, marker in applied.items():
-                n = para["text"].count(glyph)
-                if n:
-                    counts[marker] += n
-                    chapters[marker].add(ch["n"])
-    return counts, {k: sorted(v) for k, v in chapters.items()}
+                chapter_set[marker].add(ch["n"])
+    return counts, {k: sorted(v) for k, v in chapter_set.items()}
 
 
 def main() -> None:
@@ -176,11 +182,11 @@ def main() -> None:
     lines += [
         "附註",
         "-" * 72,
-        "1. 第三類列的是通行本用字，不是崇禎本原刻的那個字形。要照原刻存真，",
+        "1. 第二類列的是通行本用字，不是崇禎本原刻的那個字形。要照原刻存真，",
         "   目前只能維持「［　］」標記；要可讀，就改用通行字。兩者取捨由使用者決定。",
         "2. 第50回有一個沒有對應左括號的孤立「］」（「大雞巴］達達」），",
         "   是底本輸入時的訛誤，本站未改動，保留原樣。",
-        "3. 已套用的對照表在 tools/extract_text.py 的 MISSING_GLYPHS；",
+        "3. 第一類已還原的對照表在 tools/extract_text.py 的 MISSING_GLYPHS；",
         "   在該表補上一行、重跑 extract_text.py 與 build_data.py 即可生效。",
         "4. 比對用的腳本為 tools/resolve_glyphs.py，本清單由 "
         "tools/write_glyph_list.py 產生。",

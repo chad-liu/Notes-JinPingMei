@@ -56,12 +56,16 @@ node tools/smoke_test.js   # 驗證輸出是否符合前端讀取的欄位
 ### 缺字處理
 
 底本輸入時，凡國標碼表所缺的漢字一律寫成「［偏旁 部件］」，全書 71 種、177 處。
-`data/修改字.txt` 是這些標記的 Unicode 對應字考訂清單，依據分三級：
-以梅節夢梅館校本《金瓶梅詞話》平行段落比對而得者標「詞話」，
-構字與辭例俱合者標「構字」，詞話本該處亦無字、Unicode 亦查無該字形者標「待考」。
+其中 35 種、125 處已還原成 Unicode 字（對照表在 `tools/extract_text.py` 的 `MISSING_GLYPHS`，
+補一行再重跑 `extract_text.py` 與 `build_data.py` 即可生效）。
 
-已還原到正文的對照表在 `tools/extract_text.py` 的 `MISSING_GLYPHS`，
-補一行再重跑 `extract_text.py` 與 `build_data.py` 即可生效。
+`data/修改字.txt` 是完整的考訂清單，依據分三級：以梅節夢梅館校本《金瓶梅詞話》
+平行段落比對而得者標「詞話」，構字與辭例俱合者標「構字」，
+詞話本該處亦無字、Unicode 亦查無該字形者標「待考」。
+
+還原的字裡有一個「𢵞」（U+22D5E）在 BMP 之外。Python 算一個字、JavaScript 的
+`slice` 算兩個碼元，因此 `build_data.py` 會把實體位移換算成 UTF-16 碼元再輸出；
+`tools/smoke_test.js` 用 JS 逐段驗證切片與原字串相符，正是在守這件事。
 
 ### 實體標註怎麼做的
 

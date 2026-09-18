@@ -50,12 +50,30 @@ def build_matcher() -> tuple[re.Pattern[str], dict[str, dict]]:
     return pattern, form_map
 
 
+def utf16_table(text: str) -> list[int] | None:
+    """字碼位索引 → UTF-16 碼元索引的對照表。
+
+    段落若含 BMP 以外的字（如「𢵞」U+22D5E），Python 算一個字、
+    JavaScript 的 slice 算兩個碼元，其後的標記位移會整個錯開。
+    全段都在 BMP 內時回傳 None，照原索引即可。
+    """
+    if max(map(ord, text), default=0) < 0x10000:
+        return None
+    table, acc = [], 0
+    for ch in text:
+        table.append(acc)
+        acc += 2 if ord(ch) > 0xFFFF else 1
+    table.append(acc)
+    return table
+
+
 def annotate(chapters: list[dict], pattern, form_map) -> None:
     """就地把每段文字掃出實體，寫入 paragraph['entities']。"""
     counter = 0
     for ch in chapters:
         for para in ch["paragraphs"]:
             hits = []
+            table = utf16_table(para["text"])
             for m in pattern.finditer(para["text"]):
                 info = form_map[m.group(0)]
                 counter += 1
@@ -66,8 +84,8 @@ def annotate(chapters: list[dict], pattern, form_map) -> None:
                     "type": info["type"],
                     "type_zh": info["type_zh"],
                     "text": m.group(0),
-                    "start": m.start(),
-                    "end": m.end(),
+                    "start": table[m.start()] if table else m.start(),
+                    "end": table[m.end()] if table else m.end(),
                 })
             para["entities"] = hits
 
@@ -76,10 +94,9 @@ def dump(name: str, payload: dict) -> None:
     path = OUT / name
     text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     path.write_text(text, encoding="utf-8")
-    pretty = json.dumps(payload, ensure_ascii=False, indent=1)
     (OUT / f"{name}.js").write_text(
         "window.DEMO_JSON = window.DEMO_JSON || {};\n"
-        f'window.DEMO_JSON["data/{name}"] = {pretty};\n',
+        f'window.DEMO_JSON["data/{name}"] = {text};\n',
         encoding="utf-8",
     )
     print(f"  {name:<32} {path.stat().st_size/1024:>9,.0f} KB")
