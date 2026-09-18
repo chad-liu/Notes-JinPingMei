@@ -59,7 +59,7 @@ node tools/smoke_test.js   # 驗證輸出是否符合前端讀取的欄位
 現已全部還原，正文不再留有任何「［　］」標記。對照表在 `tools/extract_text.py` 的
 `MISSING_GLYPHS`，改一行再重跑 `extract_text.py` 與 `build_data.py` 即可生效。
 
-- **依原刻字形還原** 65 種、171 處
+- **依原刻字形還原** 65 種、171 處 —— 凡原註的構字在 Unicode 查得到，一律取該字
 - **原刻字形查無，只能取通行字** 6 種、6 處（烤、躞、踮、礴、胤）
 
 `data/修改字.txt` 是完整的考訂清單。考訂依據分三種：用 CJK IDS 部件資料庫反查、
