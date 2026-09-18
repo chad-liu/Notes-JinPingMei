@@ -229,3 +229,181 @@ RELATIONS: list[tuple[str, str, str, str, str]] = [
     ("person_zheng_aiyue", "person_zheng_aixiang", "kin", "姊妹", "鄭家姊妹同在院中。"),
     ("person_zheng_aiyue", "person_wang_sanguan", "romance", "往來", "巧施連環計。"),
 ]
+
+# --------------------------------------------------------------------------
+# 次要人物
+#
+# 只收書中明確交代的關係：親屬、主僕、同班、共謀、依附。
+# 章回裡只是同時在場而無明文關係的一律不補——那已由同段共現呈現。
+# --------------------------------------------------------------------------
+
+RELATIONS += [
+    # ---- 周守備府 ----
+    ("person_pang_chunmei", "person_yuegui", "servant", "主僕", "月桂為春梅房中大丫鬟。"),
+    ("person_pang_chunmei", "person_lanhua", "servant", "主僕", "蘭花為守備府小丫鬟。"),
+    ("person_zhou_shoubei", "person_yutang", "servant", "主僕", "玉堂為府中養娘。"),
+    ("person_zhou_shoubei", "person_jingui", "servant", "主僕", "金匱為府中養娘。"),
+    ("person_yutang", "person_jingui", "ally", "同事", "兩人同抱奶金哥兒。"),
+    ("person_zhou_shoubei", "person_zhou_ren", "servant", "主僕", "周仁為府中家人。"),
+    ("person_zhou_shoubei", "person_zhou_xuan", "kin", "族兄弟", "周宣為周統制族弟，人稱二爺。"),
+    ("person_zhou_xuan", "person_ge_cuiping", "ally", "同守宅", "末回與葛翠屏、韓愛姐同看守宅子。"),
+
+    # ---- 李通判之家 ----
+    ("person_li_tongpan", "person_li_yanei", "kin", "父子", "李衙內為李通判之子。"),
+    ("person_li_yanei", "person_yuzan", "servant", "主僕", "玉簪兒為李衙內房中丫頭。"),
+    ("person_yuzan", "person_meng_yulou", "conflict", "妒忌", "玉簪兒妒孟玉樓，被責發賣。"),
+    ("person_li_tongpan", "person_mantang", "servant", "主僕", "滿堂兒為李通判家小廝。"),
+
+    # ---- 陳家 ----
+    ("person_chen_hong", "person_zhangshi", "marriage", "夫妻", "張氏為陳洪之妻。"),
+    ("person_zhangshi", "person_chen_jingji", "kin", "母子", "敬濟參見父靈後與母親張氏磕頭。"),
+    ("person_chen_hong", "person_zhang_shilian", "kin", "妹夫", "張世廉為陳洪妹夫。"),
+    ("person_chen_hong", "person_chongxi", "servant", "主僕", "重喜兒為陳家小廝。"),
+    ("person_chen_hong", "person_jinqian", "servant", "主僕", "金錢兒為陳家小廝。"),
+    ("person_chen_jingji", "person_yang_dalang", "ally", "交遊", "同販貨往來的江湖友人。"),
+    ("person_chen_jingji", "person_xie_sanlang", "ally", "交遊", "陳敬濟之友。"),
+    ("person_chen_jingji", "person_yang_erlang", "ally", "交遊", "陳敬濟之友。"),
+    ("person_chen_jingji", "person_lu_erge", "ally", "交遊", "陳敬濟之友。"),
+
+    # ---- 韓道國一家 ----
+    ("person_han_daoguo", "person_balao", "servant", "主僕", "八老為韓家家奴。"),
+    ("person_wang_liuer", "person_jiner", "servant", "主僕", "錦兒為王六兒買來的丫頭。"),
+    ("person_han_daoguo", "person_wang_han", "servant", "主僕", "王漢為韓道國的小郎。"),
+    ("person_han_daoguo", "person_hu_xiu", "patron", "東家後生", "胡秀替韓道國押貨船。"),
+    ("person_hu_xiu", "person_ximen_qing", "patron", "東家後生", "自杭州回來向西門慶回話。"),
+
+    # ---- 院中粉頭、小優 ----
+    ("person_zheng_aiyue", "person_zheng_chun", "kin", "兄妹", "鄭春為鄭愛月之兄。"),
+    ("person_zheng_aiyue", "person_zheng_mama", "kin", "母女", "鄭媽媽為鄭家鴇母。"),
+    ("person_zheng_aixiang", "person_zheng_chun", "kin", "兄妹", "同為鄭家子女。"),
+    ("person_qi_xianger", "person_wang_sanguan", "romance", "梳籠", "王三官梳籠齊香兒。"),
+    ("person_qi_xianger", "person_hong_sier", "ally", "同應局", "與董嬌兒三人常同應西門府酒席。"),
+    ("person_hong_sier", "person_dong_jiaoer", "ally", "同應局", "同赴西門府應局。"),
+    ("person_han_jinchuan", "person_xiaochou", "kin", "姑姪", "消愁兒為韓金釧姪女。"),
+    ("person_wang_gui", "person_wang_xiang", "kin", "兄弟", "王相為王桂之弟。"),
+    ("person_li_ming", "person_zheng_chun", "ally", "同班小優", "與吳惠、邵奉同班承應。"),
+    ("person_zheng_chun", "person_shao_feng", "ally", "同班小優", "同赴西門府彈唱。"),
+    ("person_zheng_chun", "person_wang_xiang", "ally", "同班小優", "鄭春引王相見西門慶。"),
+    ("person_li_ming", "person_shao_qian", "ally", "同班小優", "與韓佐同來磕頭。"),
+    ("person_zhang_mei", "person_xu_shun", "ally", "海鹽子弟", "同挑戲箱搬演戲文。"),
+    ("person_zhou_shun", "person_yuan_yan", "ally", "海鹽子弟", "一裝旦、一貼旦。"),
+
+    # ---- 朝廷、官場 ----
+    ("person_cai_jing", "person_cai_you", "kin", "父子", "蔡攸為蔡京之子，祥和殿學士。"),
+    ("person_cai_jing", "person_gao_an", "servant", "主僕", "高安為蔡京府管家。"),
+    ("person_gao_an", "person_zhai_qian", "ally", "同府管家", "二人分掌蔡府事務。"),
+    ("person_yang_jian", "person_yang_sheng", "patron", "黨羽", "楊戩名下幹辦。"),
+    ("person_yang_jian", "person_han_zongren", "patron", "黨羽", "楊戩名下府掾。"),
+    ("person_yang_jian", "person_zhao_hongdao", "patron", "黨羽", "楊戩名下府掾。"),
+    ("person_yang_jian", "person_liu_cheng", "patron", "黨羽", "楊戩名下班頭。"),
+    ("person_yang_jian", "person_hu_si", "patron", "黨羽", "與陳洪、西門慶同列彈章。"),
+    ("person_wang_fu", "person_dong_sheng", "patron", "黨羽", "王黼名下書辦官。"),
+    ("person_wang_fu", "person_wang_lian", "patron", "黨羽", "王黼名下家人。"),
+    ("person_wang_fu", "person_huang_yu", "patron", "黨羽", "王黼名下班頭。"),
+    ("person_wang_fu", "person_yang_jian", "ally", "同被劾", "二人同被拿送三法司。"),
+    ("person_cai_jing", "person_gao_qiu", "ally", "同朝", "同列輔弼，朝儀同班。"),
+    ("person_cai_jing", "person_li_bangyan", "ally", "同朝", "同列輔弼。"),
+    ("person_huang_taiwei", "person_wang_ye", "ally", "同朝", "隴西公與太尉同至。"),
+    ("person_wang_sanguan", "person_liuhuang", "patron", "磕頭", "王三官往東京與六黃公公磕頭。"),
+
+    # 第六十五回，山東各級官員同赴廳參黃太尉
+    ("person_huang_taiwei", "person_gong_gong", "patron", "廳參", "山東左佈政。"),
+    ("person_huang_taiwei", "person_he_qigao", "patron", "廳參", "山東左參政。"),
+    ("person_huang_taiwei", "person_chen_sizhen", "patron", "廳參", "山東右佈政。"),
+    ("person_huang_taiwei", "person_feng_tinghu", "patron", "廳參", "左參議。"),
+    ("person_huang_taiwei", "person_wang_boyan", "patron", "廳參", "右參議。"),
+    ("person_huang_taiwei", "person_zhao_ne", "patron", "廳參", "廉使。"),
+    ("person_huang_taiwei", "person_han_wenguang", "patron", "廳參", "採訪使。"),
+    ("person_huang_taiwei", "person_chen_zhenghui", "patron", "廳參", "提學副使。"),
+    ("person_huang_taiwei", "person_wang_shiqi", "patron", "廳參", "青州府官。"),
+    ("person_huang_taiwei", "person_huang_jia", "patron", "廳參", "登州府官。"),
+    ("person_huang_taiwei", "person_ye_qian", "patron", "廳參", "萊州府官。"),
+    ("person_huang_taiwei", "person_zhang_shuye", "patron", "廳參", "與八府官同行廳參之禮。"),
+
+    # 陽穀、清河兩縣的官吏
+    ("person_li_datian", "person_yue_hean", "ally", "同僚", "知縣與縣丞。"),
+    ("person_li_datian", "person_xia_gongji", "ally", "同僚", "知縣與典史。"),
+    ("person_li_datian", "person_qian_lao", "ally", "同僚", "知縣與司吏。"),
+    ("person_chen_wenzhao", "person_wu_song", "patron", "審讞", "東平府尹審武松案時力持公道。"),
+    ("person_chen_wenzhao", "person_qian_lao", "conflict", "問責", "痛責司吏錢勞二十板。"),
+    ("person_chen_xiansheng", "person_wu_song", "ally", "代書", "替武松寫告狀。"),
+    ("person_gao_lian", "person_yin_tianxi", "kin", "郎舅", "殷天錫為知州高廉的妻弟。"),
+    ("person_di_sibin", "person_miao_qing", "conflict", "查案", "陽穀縣丞狄斯彬查苗青一案。"),
+    ("person_hu_shiwen", "person_di_sibin", "patron", "調委", "東平府尹胡師文調委狄斯彬查辦。"),
+    ("person_hu_shiwen", "person_ximen_qing", "ally", "相交", "府尹胡師文與西門慶相交，為苗青案迴護。"),
+    ("person_huang_taiwei", "person_hu_shiwen", "patron", "廳參", "東平府知府。"),
+    ("person_huang_taiwei", "person_xu_song", "patron", "廳參", "東昌府知府。"),
+    ("person_huang_taiwei", "person_ling_yunyi", "patron", "廳參", "兗州府知府。"),
+    ("person_huang_taiwei", "person_han_bangqi", "patron", "廳參", "徐州府知府。"),
+    ("person_huang_taiwei", "person_lei_qiyuan", "patron", "廳參", "兵備副使。"),
+    ("person_huang_mei", "person_miao_qing", "conflict", "行文追究", "開封府通判黃美接安童告狀，行文追究苗青。"),
+    ("person_antong", "person_huang_mei", "ally", "告狀", "安童走東京投開封府黃通判具訴。"),
+
+    # ---- 苗員外一案 ----
+    ("person_miao_tianxiu", "person_weng_ba", "conflict", "謀主", "船家翁八與陳三合謀殺主。"),
+    ("person_miao_qing", "person_weng_ba", "ally", "同謀", "苗青買通船家下手。"),
+    ("person_miao_qing", "person_yue_san", "ally", "窩藏", "苗青逃匿經紀樂三家。"),
+    ("person_yue_san", "person_yue_sansao", "marriage", "夫妻", "樂三嫂為樂三之妻。"),
+    ("person_yue_sansao", "person_wang_liuer", "ally", "往來", "兩家住鄰，所交極厚。"),
+    ("person_miao_tianxiu", "person_huang_mei", "kin", "表兄弟", "黃美為苗天秀表兄。"),
+    ("person_miao_tianxiu", "person_diao_qier", "marriage", "妾", "刁七兒為苗天秀之妾。"),
+    ("person_weng_ba", "person_antong", "conflict", "行兇", "翁八一悶棍打落安童入水。"),
+
+    # ---- 西門府 ----
+    ("person_meng_yulou", "person_xiaoluan", "servant", "主僕", "小鸞隨玉樓過門，與蘭香同侍。"),
+    ("person_sun_xuee", "person_cuier", "servant", "主僕", "翠兒買入雪娥房中使喚。"),
+    ("person_li_jiaoer", "person_xiahua", "servant", "主僕", "夏花兒為李嬌兒房中丫頭。"),
+    ("person_ximen_qing", "person_chunyan", "servant", "主僕", "與春鴻同為蘇州歌童。"),
+    ("person_chunhong", "person_chunyan", "ally", "同來歌童", "二人同時進府，春燕早死。"),
+    ("person_ximen_qing", "person_tiegun", "servant", "主僕", "西門府小廝。"),
+    ("person_ximen_qing", "person_sengbao", "servant", "主僕", "西門府小廝。"),
+    ("person_ximen_qing", "person_zheng_ji", "servant", "主僕", "府中打茶的小廝。"),
+    ("person_ximen_qing", "person_wang_xian", "patron", "東家後生", "緞子鋪後生，管取車稅銀兩。"),
+    ("person_ni_peng", "person_wen_bigu", "ally", "薦舉", "倪秀才薦溫必古入西門府為西席。"),
+    ("person_ximen_qing", "person_ni_peng", "patron", "延請", "西門慶延倪秀才引薦西席。"),
+    ("person_ximen_qing", "person_shui_xiucai", "patron", "延請", "溫秀才之後受薦的西席人選。"),
+    ("person_ximen_qing", "person_xiao_zhouer", "patron", "承應", "篦頭待詔小周兒替他篦頭櫛發。"),
+
+    # ---- 花家、王招宣府 ----
+    ("person_hua_zixu", "person_tianfu", "servant", "主僕", "天福兒為花家小廝。"),
+    ("person_wang_sanguan", "person_yongding", "servant", "主僕", "永定兒為招宣府小廝。"),
+
+    # ---- 醫卜、術士 ----
+    ("person_he_laoren", "person_he_chunquan", "kin", "父子", "何春泉為何老人之子。"),
+    ("person_ximen_qing", "person_he_chunquan", "patron", "診病", "西門慶末疾請何春泉來看。"),
+    ("person_ximen_qing", "person_zhao_taiyi", "patron", "診病", "清河庸醫，用藥荒唐。"),
+    ("person_ximen_qing", "person_xu_xiansheng", "patron", "擇日", "陰陽生徐先生主西門府喪葬擇日、開喪。"),
+    ("person_li_pinger", "person_xu_xiansheng", "patron", "擇日", "瓶兒之喪由徐先生批書。"),
+
+    # ---- 親朋 ----
+    ("person_qiao_daohu", "person_qiao_taitai", "kin", "家眷", "喬家女眷。"),
+    ("person_wu_yueniang", "person_wu_dayi", "kin", "親眷", "吳家親戚。"),
+    ("person_wu_yueniang", "person_shen_yifu", "kin", "姻親", "西門府姻親。"),
+    ("person_wu_yueniang", "person_han_yifu", "kin", "姻親", "西門府姻親。"),
+    ("person_wu_yueniang", "person_zheng_sanjie", "kin", "親眷", "西門府女眷親戚。"),
+    ("person_wu_yueniang", "person_zhu_xuban", "kin", "堂客", "序班朱家娘子，西門府堂客。"),
+    ("person_wu_yueniang", "person_shang_juren", "kin", "堂客", "舉人尚家娘子，西門府堂客。"),
+    ("person_hua_dajiu", "person_hua_dajinzi", "marriage", "夫妻", "花大妗子為花大舅之妻。"),
+
+    # ---- 其他 ----
+    ("person_pan_jinlian", "person_bai_yulian", "ally", "同伴", "同在王招宣府時的夥伴。"),
+    ("person_pan_jinlian", "person_wang_huangqin", "kin", "鄰家", "潘金蓮舊居的鄰家皇親。"),
+    ("person_yinger", "person_yao_erlang", "patron", "收養", "武大死後迎兒寄養姚二郎家。"),
+    ("person_han_er", "person_che_dan", "ally", "同夥", "與管世寬、郝賢同鬧韓道國家。"),
+    ("person_che_dan", "person_guan_shikuan", "ally", "同夥", "清河潑皮。"),
+    ("person_che_dan", "person_hao_xian", "ally", "同夥", "清河潑皮。"),
+    ("person_liang_zhongshu", "person_li_kui", "conflict", "屠戮", "李逵翠雲樓殺梁中書全家老小。"),
+    ("person_li_pinger", "person_li_kui", "conflict", "亂離", "瓶兒因翠雲樓之變攜財出走。"),
+]
+
+# 補上原詞表就有、關係卻漏列的幾位
+RELATIONS += [
+    ("person_ximen_qing", "person_laian", "servant", "主僕", "西門府小廝。"),
+    ("person_ximen_qing", "person_qitong", "servant", "主僕", "西門府小廝。"),
+    ("person_ximen_qing", "person_huixiu", "servant", "主僕", "西門府僕婦。"),
+    ("person_chen_hong", "person_chen_ding", "servant", "主僕", "陳定為陳家僕人。"),
+    ("person_zhou_shoubei", "person_zhou_zhong", "servant", "主僕", "周忠為守備府老家人。"),
+    ("person_qiao_daohu", "person_qiao_wutaitai", "kin", "家族長輩", "喬家長輩，出入西門府。"),
+    ("person_ximen_qing", "person_liu_taijian", "ally", "往來", "西門慶赴磚廠劉太監莊上設席。"),
+    ("person_ximen_qing", "person_xue_taijian", "ally", "往來", "薛太監與劉太監同赴西門府酒席。"),
+]
