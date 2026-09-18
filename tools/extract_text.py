@@ -100,7 +100,10 @@ def main() -> None:
                     continue
             kind = "verse" if "calibre10" in klass else "prose"
             paras = current["paragraphs"]
-            if kind == "verse" and paras and paras[-1]["kind"] == "verse":
+            if paras and paras[-1]["text"].count("［") > paras[-1]["text"].count("］"):
+                # 缺字標記被排版切斷在兩個 <p> 之間，接回上一段再還原
+                paras[-1]["text"] = clean(paras[-1]["text"] + text)
+            elif kind == "verse" and paras and paras[-1]["kind"] == "verse":
                 paras[-1]["text"] += "\n" + text
             else:
                 paras.append({"n": 0, "text": text, "kind": kind})

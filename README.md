@@ -39,17 +39,29 @@ python -m http.server 8788
 
 ```bash
 cd tools
-python extract_text.py    # 從 EPUB 抽出一百回正文 -> tools/build/chapters.json
-python check_lexicon.py   # 檢查詞表：零命中的表記、撞名的表記
-python build_data.py      # 標註實體並產生 ../data/*.json
+python extract_text.py     # 從 EPUB 抽出一百回正文 -> tools/build/chapters.json
+python check_lexicon.py    # 檢查詞表：零命中的表記、撞名的表記
+python build_data.py       # 標註實體並產生 ../data/*.json
+python resolve_glyphs.py   # 以詞話本比對缺字標記（考訂用，非必要步驟）
+python write_glyph_list.py # 產生 ../data/修改字.txt
 cd ..
-node tools/smoke_test.js  # 驗證輸出是否符合前端讀取的欄位
+node tools/smoke_test.js   # 驗證輸出是否符合前端讀取的欄位
 ```
 
 - `tools/lexicon.py`：實體詞表。人物、建築、地點、身份、意象共 235 個實體、420 個表記，
   每個表記都先在全文中驗證過出現次數。
 - `tools/relations.py`：186 筆人工整理的人物語義關係。
 - `tools/patch_site.py`：把上游紅樓夢展示版改寫成金瓶梅版的一次性替換清單，留作改動記錄。
+
+### 缺字處理
+
+底本輸入時，凡國標碼表所缺的漢字一律寫成「［偏旁 部件］」，全書 71 種、177 處。
+`data/修改字.txt` 是這些標記的 Unicode 對應字考訂清單，依據分三級：
+以梅節夢梅館校本《金瓶梅詞話》平行段落比對而得者標「詞話」，
+構字與辭例俱合者標「構字」，詞話本該處亦無字、Unicode 亦查無該字形者標「待考」。
+
+已還原到正文的對照表在 `tools/extract_text.py` 的 `MISSING_GLYPHS`，
+補一行再重跑 `extract_text.py` 與 `build_data.py` 即可生效。
 
 ### 實體標註怎麼做的
 

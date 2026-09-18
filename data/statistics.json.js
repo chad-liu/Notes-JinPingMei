@@ -8,7 +8,7 @@ window.DEMO_JSON["data/statistics.json"] = {
   "source_file": "金瓶梅(崇禎本).epub",
   "language": "zh-Hant",
   "total_chapters": 100,
-  "total_paragraphs": 3491,
+  "total_paragraphs": 3487,
   "total_sentences": 32571,
   "total_chars": 750049,
   "total_entities": 235,
@@ -131,7 +131,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_id": "jinpingmei_ch017",
    "chapter_number": 17,
    "title": "宇給事劾倒楊提督　李瓶兒許嫁蔣竹山",
-   "paragraph_count": 67,
+   "paragraph_count": 66,
    "char_count": 5842
   },
   {
@@ -285,7 +285,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_id": "jinpingmei_ch039",
    "chapter_number": 39,
    "title": "寄法名官哥穿道服　散生日敬濟拜冤家",
-   "paragraph_count": 55,
+   "paragraph_count": 54,
    "char_count": 7536
   },
   {
@@ -439,7 +439,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_id": "jinpingmei_ch061",
    "chapter_number": 61,
    "title": "西門慶乘醉燒陰戶　李瓶兒帶病宴重陽",
-   "paragraph_count": 49,
+   "paragraph_count": 48,
    "char_count": 12418
   },
   {
@@ -467,7 +467,7 @@ window.DEMO_JSON["data/statistics.json"] = {
    "chapter_id": "jinpingmei_ch065",
    "chapter_number": 65,
    "title": "願同穴一時喪禮盛　守孤靈半夜口脂香",
-   "paragraph_count": 66,
+   "paragraph_count": 65,
    "char_count": 8291
   },
   {
