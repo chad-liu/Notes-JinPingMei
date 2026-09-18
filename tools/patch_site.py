@@ -75,18 +75,34 @@ INDEX = [
     <article class="content">
       <h2>人物列表</h2>
       <p class="meta">詞表收錄的全部人物。點任一人可跳到瀏覽頁，看他的簡介、表記、共現與出處段落。</p>
-      <div class="people-controls">
-        <input id="peopleSearch" placeholder="搜尋人名、別名或簡介，例如 妓女、守備、丫鬟">
-        <select id="peopleSubtype" aria-label="身分"></select>
-        <select id="peopleFamily" aria-label="陣營"></select>
-        <select id="peopleSort" aria-label="排序">
-          <option value="frequency">依出現次數</option>
-          <option value="chapter">依出場回數</option>
-          <option value="name">依名稱</option>
-        </select>
+      <div class="people-tabs">
+        <button type="button" class="people-tab active" data-people-tab="cards">人物卡片</button>
+        <button type="button" class="people-tab" data-people-tab="chart">關係簡圖</button>
       </div>
-      <p id="peopleCount" class="meta"></p>
-      <div id="peopleList" class="people-grid"></div>
+      <div id="peopleCards" class="people-pane active">
+        <div class="people-controls">
+          <input id="peopleSearch" placeholder="搜尋人名、別名或簡介，例如 妓女、守備、丫鬟">
+          <select id="peopleSubtype" aria-label="身分"></select>
+          <select id="peopleFamily" aria-label="陣營"></select>
+          <select id="peopleSort" aria-label="排序">
+            <option value="frequency">依出現次數</option>
+            <option value="chapter">依出場回數</option>
+            <option value="name">依名稱</option>
+          </select>
+        </div>
+        <p id="peopleCount" class="meta"></p>
+        <div id="peopleList" class="people-grid"></div>
+      </div>
+      <div id="peopleChart" class="people-pane">
+        <p class="meta">依 1987 年手繪原圖轉繪，排列順序與原圖一致（由上而下、由左而右）。
+          原圖右下角另有二名人物遭浮水印遮蔽，無法辨識，故從缺。
+          <a id="peopleChartLink" target="_blank" rel="noopener">另開原圖</a></p>
+        <div class="chart-zoom">
+          <button type="button" class="active" data-chart-fit="fit">符合寬度</button>
+          <button type="button" data-chart-fit="full">原寸</button>
+        </div>
+        <div class="chart-frame"><img id="peopleChartImg" alt="《金瓶梅》人物關係簡圖"></div>
+      </div>
     </article>
   </section>
 
@@ -272,6 +288,17 @@ function initPeople() {
   fill('#peopleFamily', rows.map(r => r.familyZh), '全部陣營');
   ['#peopleSearch', '#peopleSubtype', '#peopleFamily', '#peopleSort']
     .forEach(sel => $(sel).addEventListener('input', renderPeople));
+  document.querySelectorAll('[data-people-tab]').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-people-tab]').forEach(b => b.classList.toggle('active', b === btn));
+    const chart = btn.dataset.peopleTab === 'chart';
+    $('#peopleCards').classList.toggle('active', !chart);
+    $('#peopleChart').classList.toggle('active', chart);
+    if (chart) loadPeopleChart();
+  }));
+  document.querySelectorAll('[data-chart-fit]').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-chart-fit]').forEach(b => b.classList.toggle('active', b === btn));
+    $('#peopleChart').classList.toggle('chart-full', btn.dataset.chartFit === 'full');
+  }));
   $('#peopleList').addEventListener('click', async e => {
     const card = e.target.closest('[data-person]');
     if (!card) return;
@@ -279,6 +306,13 @@ function initPeople() {
     showEntity(card.dataset.person);
   });
   renderPeople();
+}
+function loadPeopleChart() {
+  const img = $('#peopleChartImg');
+  if (img.getAttribute('src')) return;
+  const url = 'data/' + encodeURIComponent('金瓶梅人物關係簡圖.svg');
+  img.src = url;
+  $('#peopleChartLink').href = url;
 }
 function renderPeople() {
   const q = $('#peopleSearch').value.trim();
@@ -516,6 +550,20 @@ CSS = [
     .person-bio { font-size: 13px; line-height: 1.7; color: #334155; }
     @media (max-width: 1024px) { .people-controls { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 520px) { .people-controls { grid-template-columns: 1fr; } }
+    .people-tabs { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 18px 0 2px; }
+    .people-tab { border: 0; border-left: 1px solid var(--border); background: #fff; color: #64748b; padding: 8px 18px; cursor: pointer; font: inherit; font-size: 15px; }
+    .people-tab:first-child { border-left: 0; }
+    .people-tab.active { background: #ffe4e6; color: #9f1239; }
+    .people-pane { display: none; }
+    .people-pane.active { display: block; }
+    #peopleChart .meta { margin: 14px 0 0; line-height: 1.7; }
+    #peopleChart .meta a { color: #9f1239; }
+    .chart-zoom { display: inline-flex; gap: 8px; margin: 10px 0 12px; }
+    .chart-zoom button { border: 1px solid #d0d7de; background: #fff; border-radius: 999px; color: #64748b; cursor: pointer; padding: 4px 12px; font: inherit; font-size: 13px; }
+    .chart-zoom button.active { border-color: #f9a8b4; color: #9f1239; }
+    .chart-frame { border: 1px solid var(--border); border-radius: 8px; background: #fbf8f1; overflow: auto; max-height: 80vh; margin-bottom: 40px; }
+    .chart-frame img { display: block; width: 100%; height: auto; }
+    #peopleChart.chart-full .chart-frame img { width: 1800px; max-width: none; }
     .chapter-end { border: 0;"""),
 ]
 
