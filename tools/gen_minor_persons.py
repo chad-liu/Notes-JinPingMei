@@ -16,7 +16,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-# md 章節 → (subtype, family)
+# md 章節 → (subtype, family)：編寫下面 NEW_PERSONS 時的對照參考，
+# 實際的 subtype/family 以每一條的手工核定為準。
 SECTION_MAP = {
     "宋徽宗": ("official", "court"),
     "來往官僚": ("official", "court"),
