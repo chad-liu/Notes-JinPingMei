@@ -74,12 +74,12 @@ INDEX = [
      """  <section id="people" class="view">
     <article class="content">
       <h2>人物列表</h2>
-      <p class="meta">詞表收錄的全部人物。點任一人可跳到瀏覽頁，看他的簡介、表記、共現與出處段落。</p>
       <div class="people-tabs">
         <button type="button" class="people-tab active" data-people-tab="cards">人物卡片</button>
         <button type="button" class="people-tab" data-people-tab="chart">關係簡圖</button>
       </div>
       <div id="peopleCards" class="people-pane active">
+        <p class="meta people-intro">詞表收錄的全部人物。點任一人可跳到瀏覽頁，看他的簡介、表記、共現與出處段落。</p>
         <div class="people-controls">
           <input id="peopleSearch" placeholder="搜尋人名、別名或簡介，例如 妓女、守備、丫鬟">
           <select id="peopleSubtype" aria-label="身分"></select>
@@ -536,6 +536,7 @@ CSS = [
     .entity-bio { margin: 10px 0 4px; font-size: 13px; line-height: 1.7; color: #334155; border-left: 3px solid #fecdd3; padding-left: 10px; }
     #people.view.active { display: block; }
     #people .content { max-width: 1040px; margin: 0 auto; }
+    .people-intro { margin: 16px 0 0; }
     .people-controls { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0 12px; }
     .people-controls input, .people-controls select { padding: 9px 11px; }
     .people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 40px; }

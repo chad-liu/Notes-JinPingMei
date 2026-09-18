@@ -100,6 +100,7 @@
     .entity-bio { margin: 10px 0 4px; font-size: 13px; line-height: 1.7; color: #334155; border-left: 3px solid #fecdd3; padding-left: 10px; }
     #people.view.active { display: block; }
     #people .content { max-width: 1040px; margin: 0 auto; }
+    .people-intro { margin: 16px 0 0; }
     .people-controls { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0 12px; }
     .people-controls input, .people-controls select { padding: 9px 11px; }
     .people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 40px; }
