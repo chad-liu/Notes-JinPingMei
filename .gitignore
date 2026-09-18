@@ -1,0 +1,7 @@
+# 原始電子書與掃描圖檔有版權，不入版控
+books/
+data/金瓶梅人物表.jpg
+
+# 建置中間產物
+tools/build/
+tools/__pycache__/

@@ -1,0 +1,686 @@
+"""《金瓶梅》知識圖譜詞表。
+
+所有 surface form（表記）都先在崇禎本全文中驗證過出現次數，
+再依「長詞優先」原則排序比對，避免「金蓮／潘金蓮」「嬌兒／董嬌兒」這類誤切。
+
+欄位說明
+- id       實體識別碼，同時作為 JSON 索引鍵
+- name     正式名稱（canonical name）
+- subtype  節點分組，決定關係圖顏色與統計分類
+- family   所屬家族／陣營，供人物關係圖分群
+- aliases  正名以外的表記，含排行稱呼（五娘、六姐）
+- bio      人物簡介，整理自 data/金瓶梅人物關係.md 與 data/角色列表.txt
+"""
+
+from __future__ import annotations
+
+# --------------------------------------------------------------------------
+# 人物
+# --------------------------------------------------------------------------
+
+PERSONS: list[dict] = [
+    # ---- 西門慶與妻妾 -----------------------------------------------------
+    {
+        "id": "person_ximen_qing", "name": "西門慶",
+        "subtype": "main_character", "family": "ximen",
+        "aliases": ["西門大官人", "四泉"],
+        "bio": "山東清河縣富商之子，開生藥鋪起家，結拜十兄弟、廣納妻妾婢僕，"
+               "又私通多名家人婦與娼妓，靠賄賂鑽營官職、恃強凌弱謀財害命；"
+               "後因縱慾過度又服食春藥，中毒暴斃，年僅三十三歲，死後家業迅速敗落。",
+    },
+    {
+        "id": "person_pan_jinlian", "name": "潘金蓮",
+        "subtype": "main_character", "family": "ximen",
+        "aliases": ["金蓮", "六姐", "潘六兒", "五娘", "潘氏"],
+        "bio": "清河裁縫之女，因家道淪落而輾轉為婢、為妾，嫁武大郎後因愛慕武松不成，"
+               "與西門慶勾搭並合謀毒死武大郎，改嫁為西門慶第五房妾；"
+               "西門慶死後又與女婿陳敬濟私通，事敗被逐，終遭武松為兄報仇所殺。",
+    },
+    {
+        "id": "person_li_pinger", "name": "李瓶兒",
+        "subtype": "main_character", "family": "ximen",
+        "aliases": ["瓶兒", "六娘", "瓶姐", "李氏"],
+        "bio": "正月十五日生，小字瓶姐，先後嫁梁中書、花子虛，子虛死後與西門慶私通並嫁為第六房妾，"
+               "因生下官哥而備受寵愛，官哥夭折後她也憂鬱成疾，血崩而死，年僅二十七歲。",
+    },
+    {
+        "id": "person_pang_chunmei", "name": "龐春梅",
+        "subtype": "main_character", "family": "ximen",
+        "aliases": ["春梅", "春梅姐", "龐氏"],
+        "bio": "原是潘金蓮房裡的丫頭，因聰慧俊俏被西門慶收房；西門慶死後涉入潘金蓮與陳敬濟的姦情而被逐出府，"
+               "卻改嫁周守備為妾，因生子扶正，一路際遇順遂，成為風雲人物，晚年還厚葬潘金蓮、暗中收留陳敬濟。",
+    },
+    {
+        "id": "person_wu_yueniang", "name": "吳月娘",
+        "subtype": "consort", "family": "ximen",
+        "aliases": ["月娘", "大娘", "月姐"],
+        "bio": "清河左衛吳千戶之女，是西門慶的填房正室，性情百依百順卻也精於算計；"
+               "西門慶死後獨力支撐敗落家業，賣了春梅、逐了金蓮，戰亂中攜孝哥逃難，"
+               "終認玳安為子，安養至七十歲善終。",
+    },
+    {
+        "id": "person_meng_yulou", "name": "孟玉樓",
+        "subtype": "consort", "family": "ximen",
+        "aliases": ["玉樓", "三娘", "孟三兒", "孟氏"],
+        "bio": "排行三姐，原是布商楊宗錫的遺孀，家財豐厚，經人做媒嫁給西門慶為第三房妾，"
+               "在西門府中善於周旋、站穩地位；西門慶死後改嫁李衙內，性格蘊藉圓融，"
+               "與鋒芒畢露的潘金蓮恰成對比。",
+    },
+    {
+        "id": "person_li_jiaoer", "name": "李嬌兒",
+        "subtype": "consort", "family": "ximen",
+        "aliases": ["嬌兒", "二娘"],
+        "bio": "原是妓院名妓，經應伯爵做媒嫁給西門慶為第二房妾，與孫雪娥同為潘金蓮的對頭；"
+               "西門慶死後大鬧靈堂逼月娘分產，拐帶財物改嫁張二官。",
+    },
+    {
+        "id": "person_sun_xuee", "name": "孫雪娥",
+        "subtype": "consort", "family": "ximen",
+        "aliases": ["雪娥", "四娘"],
+        "bio": "原是西門慶亡妻陳氏的陪嫁丫頭，收房後排行第四，在廚下掌管全家飲食；"
+               "因與潘金蓮、春梅結怨屢遭欺凌，又與僕人來旺私通，"
+               "西門慶死後家道敗落，輾轉被賣入娼門淪為下等妓女。",
+    },
+    {
+        "id": "person_zhuo_diuer", "name": "卓丟兒",
+        "subtype": "consort", "family": "ximen",
+        "aliases": ["卓二姐"],
+        "bio": "西門慶第三房妾，南街窠子出身，身子瘦怯、三病四痛，入門未久即亡。",
+    },
+    {
+        "id": "person_chenshi", "name": "陳氏",
+        "subtype": "consort", "family": "ximen",
+        "aliases": [],
+        "bio": "西門慶的元配渾家，早逝，留下女兒西門大姐。",
+    },
+    {
+        "id": "person_ximen_dajie", "name": "西門大姐",
+        "subtype": "kin", "family": "ximen",
+        "aliases": [],
+        "bio": "西門慶與元配陳氏之女，嫁陳敬濟為妻，屢受夫婿凌虐，終於自縊。",
+    },
+    {
+        "id": "person_guange", "name": "官哥兒",
+        "subtype": "kin", "family": "ximen",
+        "aliases": ["官哥"],
+        "bio": "李瓶兒為西門慶所生之子，出生即加官進祿、備受寵愛，"
+               "卻遭潘金蓮訓貓驚嚇，未滿週歲而夭折。",
+    },
+    {
+        "id": "person_xiaoge", "name": "孝哥兒",
+        "subtype": "kin", "family": "ximen",
+        "aliases": ["孝哥"],
+        "bio": "吳月娘所生之子，西門慶臨終前唯一得留的血脈；長到十五歲時逢戰亂隨母逃難，"
+               "途中被普靜和尚以禪杖一指，幻化回西門慶原形，月娘因此許他出家為徒。",
+    },
+
+    # ---- 西門府奴婢、家僕 -------------------------------------------------
+    {
+        "id": "person_daian", "name": "玳安",
+        "subtype": "servant", "family": "ximen",
+        "aliases": ["玳安兒"],
+        "bio": "西門慶身邊最得力的心腹小廝，替主子穿針引線、傳遞消息；"
+               "西門慶死後與吳月娘丫頭小玉私通，被月娘撮合成親，後改名西門安承繼家業。",
+    },
+    {"id": "person_pingan", "name": "平安", "subtype": "servant", "family": "ximen",
+     "aliases": ["平安兒"], "bio": "西門府看門小廝，後偷盜首飾事發被逐。"},
+    {"id": "person_laiwang", "name": "來旺", "subtype": "servant", "family": "ximen",
+     "aliases": ["來旺兒"], "bio": "西門府家僕，妻宋蕙蓮與西門慶私通；遭潘金蓮設計陷害，遞解徐州。"},
+    {"id": "person_laibao", "name": "來保", "subtype": "servant", "family": "ximen",
+     "aliases": [], "bio": "西門府管事家僕，常往東京打點蔡府；西門慶死後欺主背恩，捲財自立。"},
+    {"id": "person_laixing", "name": "來興", "subtype": "servant", "family": "ximen",
+     "aliases": ["來興兒"], "bio": "西門府家僕，管採買雜務。"},
+    {"id": "person_laian", "name": "來安", "subtype": "servant", "family": "ximen",
+     "aliases": ["來安兒"], "bio": "西門府小廝。"},
+    {"id": "person_laijue", "name": "來爵", "subtype": "servant", "family": "ximen",
+     "aliases": ["來爵兒"], "bio": "西門府家僕，妻惠元亦在府中幫工。"},
+    {"id": "person_laizhao", "name": "來昭", "subtype": "servant", "family": "ximen",
+     "aliases": ["來昭兒"], "bio": "西門府家僕，妻一丈青。"},
+    {"id": "person_shutong", "name": "書童", "subtype": "servant", "family": "ximen",
+     "aliases": ["書童兒"], "bio": "西門慶書房小廝，因貌美受寵，與玉簫有染，後捲物潛逃。"},
+    {"id": "person_qintong", "name": "琴童", "subtype": "servant", "family": "ximen",
+     "aliases": ["琴童兒"], "bio": "西門府小廝，曾因藏壺構釁挨打。"},
+    {"id": "person_qitong", "name": "棋童", "subtype": "servant", "family": "ximen",
+     "aliases": ["棋童兒"], "bio": "西門府小廝。"},
+    {"id": "person_huatong", "name": "畫童", "subtype": "servant", "family": "ximen",
+     "aliases": ["畫童兒"], "bio": "西門府小廝，曾哭躲溫葵軒。"},
+    {"id": "person_chunhong", "name": "春鴻", "subtype": "servant", "family": "ximen",
+     "aliases": [], "bio": "蘇州歌童，苗員外所贈，能唱南曲。"},
+    {"id": "person_wangjing", "name": "王經", "subtype": "servant", "family": "ximen",
+     "aliases": [], "bio": "西門慶收用的小廝，王六兒的姪兒。"},
+    {
+        "id": "person_chunmei_qiuju", "name": "秋菊",
+        "subtype": "maid", "family": "ximen", "aliases": [],
+        "bio": "西門慶偷娶潘金蓮後買來服侍燒火的丫頭，生性愚鈍，屢遭金蓮與春梅凌虐責打；"
+               "她因目睹金蓮與陳敬濟的姦情屢次告密卻始終不被採信，直到吳月娘親眼撞破。",
+    },
+    {
+        "id": "person_yingchun", "name": "迎春",
+        "subtype": "maid", "family": "ximen", "aliases": ["迎春兒"],
+        "bio": "李瓶兒的貼身丫頭，瓶兒與西門慶私通時為其把風接應；"
+               "瓶兒嫁入西門府後仍隨侍在側，西門慶死後輾轉被送入東京翟家為婢。",
+    },
+    {"id": "person_yuxiao", "name": "玉簫", "subtype": "maid", "family": "ximen",
+     "aliases": ["玉蕭"], "bio": "吳月娘房中丫鬟，與書童有染，屢次替潘金蓮通風報信。"},
+    {"id": "person_xiaoyu", "name": "小玉", "subtype": "maid", "family": "ximen",
+     "aliases": [], "bio": "吳月娘貼身丫頭，後與玳安成親。"},
+    {"id": "person_lanxiang", "name": "蘭香", "subtype": "maid", "family": "ximen",
+     "aliases": [], "bio": "孟玉樓房中丫鬟。"},
+    {"id": "person_xiuchun", "name": "繡春", "subtype": "maid", "family": "ximen",
+     "aliases": [], "bio": "李瓶兒房中小丫頭。"},
+    {"id": "person_zhongqiu", "name": "中秋兒", "subtype": "maid", "family": "ximen",
+     "aliases": [], "bio": "孫雪娥房中丫鬟。"},
+    {
+        "id": "person_ruyier", "name": "如意兒",
+        "subtype": "maid", "family": "ximen", "aliases": [],
+        "bio": "原為李瓶兒之子官哥的奶媽，李瓶兒病故後趁隙侍茶遞水勾搭上西門慶，"
+               "頂了瓶兒的位置、補了瓶兒的缺；西門慶死後轉而侍候吳月娘之子孝哥。",
+    },
+    {
+        "id": "person_song_huilian", "name": "宋蕙蓮",
+        "subtype": "maid", "family": "ximen", "aliases": ["蕙蓮"],
+        "bio": "本名金蓮，賣棺材宋仁之女，先嫁廚役蔣聰，再嫁西門慶家僕來旺兒，"
+               "因與西門慶私通而得寵；後遭潘金蓮設計陷害來旺，心灰意冷之下上吊自盡。",
+    },
+    {"id": "person_yizhangqing", "name": "一丈青", "subtype": "servant", "family": "ximen",
+     "aliases": [], "bio": "來昭之妻，西門府粗使僕婦。"},
+    {"id": "person_huixiang", "name": "惠祥", "subtype": "servant", "family": "ximen",
+     "aliases": [], "bio": "來興之妻，西門府僕婦，曾怒詈來旺婦。"},
+    {"id": "person_huixiu", "name": "惠秀", "subtype": "servant", "family": "ximen",
+     "aliases": [], "bio": "西門府僕婦。"},
+    {"id": "person_huiyuan", "name": "惠元", "subtype": "servant", "family": "ximen",
+     "aliases": [], "bio": "來爵之妻，西門府僕婦。"},
+    {"id": "person_feng_mama", "name": "馮媽媽", "subtype": "matchmaker", "family": "ximen",
+     "aliases": ["馮婆子"], "bio": "李瓶兒的老馮媽媽，替瓶兒看房子、傳話遞信，兼做牙婆生意。"},
+    {"id": "person_ben_si", "name": "賁四", "subtype": "merchant", "family": "ximen",
+     "aliases": ["賁第傳"], "bio": "西門府夥計，管工程與鋪面雜務。"},
+    {"id": "person_bensi_sao", "name": "賁四嫂", "subtype": "servant", "family": "ximen",
+     "aliases": ["賁四娘子"],
+     "bio": "賁四之妻，原為人奶媽，因與西門慶及管家玳安私通，靠著送禮打點瞞過眾人耳目。"},
+    {"id": "person_fu_huoji", "name": "傅夥計", "subtype": "merchant", "family": "ximen",
+     "aliases": ["傅自新"], "bio": "西門慶生藥鋪的老夥計，忠厚本分。"},
+    {"id": "person_gan_huoji", "name": "甘夥計", "subtype": "merchant", "family": "ximen",
+     "aliases": ["甘出身"], "bio": "西門慶絨線鋪夥計。"},
+    {"id": "person_cui_ben", "name": "崔本", "subtype": "merchant", "family": "ximen",
+     "aliases": [], "bio": "西門慶緞子鋪夥計，常隨來保下江南辦貨。"},
+    {"id": "person_wen_bigu", "name": "溫秀才", "subtype": "merchant", "family": "ximen",
+     "aliases": ["溫葵軒", "溫必古"], "bio": "西門慶延請的西席，替他寫書啟往來，後因穢行被逐。"},
+    {"id": "person_wu_dianen", "name": "吳典恩", "subtype": "official", "family": "ximen",
+     "aliases": [], "bio": "受西門慶提攜得官的縣中陰陽生，西門慶死後負心被辱。"},
+
+    # ---- 結拜十兄弟與幫閒 -------------------------------------------------
+    {
+        "id": "person_ying_bojue", "name": "應伯爵",
+        "subtype": "hanger_on", "family": "ximen",
+        "aliases": ["伯爵", "應二哥", "應二叔", "應花子"],
+        "bio": "原是綢緞鋪應員外之子，家道中落後專靠幫閒維生，是西門慶結拜十兄弟中排行第二、"
+               "最得力的幫閒領班，李嬌兒、潘金蓮、李瓶兒等多樁姻緣都經他穿針引線；"
+               "西門慶死後便另攀新貴。",
+    },
+    {"id": "person_xie_xida", "name": "謝希大", "subtype": "hanger_on", "family": "ximen",
+     "aliases": ["希大", "謝子純"], "bio": "西門慶結拜十兄弟之一，善彈琵琶，與應伯爵並為幫閒。"},
+    {"id": "person_zhu_shinian", "name": "祝實念", "subtype": "hanger_on", "family": "ximen",
+     "aliases": ["祝麻子"], "bio": "西門慶結拜十兄弟之一。"},
+    {"id": "person_sun_guazui", "name": "孫寡嘴", "subtype": "hanger_on", "family": "ximen",
+     "aliases": ["孫天化"], "bio": "西門慶結拜十兄弟之一，口舌便給。"},
+    {"id": "person_chang_zhijie", "name": "常峙節", "subtype": "hanger_on", "family": "ximen",
+     "aliases": [],
+     "bio": "西門慶結拜十兄弟中排行老九，本領平庸、地位低微的尋常幫閒，"
+            "唯一值得一提的事跡是向西門慶借得幾兩碎銀後回家向妻子逞威風。"},
+    {"id": "person_bai_laiguang", "name": "白賚光", "subtype": "hanger_on", "family": "ximen",
+     "aliases": [], "bio": "西門慶結拜十兄弟之一，善說笑話。"},
+    {"id": "person_yun_lishou", "name": "雲理守", "subtype": "hanger_on", "family": "ximen",
+     "aliases": ["雲離守", "雲二哥"], "bio": "西門慶結拜十兄弟之一，後承襲兄職做了指揮。"},
+    {"id": "person_bu_zhidao", "name": "卜志道", "subtype": "hanger_on", "family": "ximen",
+     "aliases": [], "bio": "西門慶結拜十兄弟之一，開篇即亡，由花子虛遞補。"},
+
+    # ---- 陳家 ------------------------------------------------------------
+    {
+        "id": "person_chen_jingji", "name": "陳敬濟",
+        "subtype": "main_character", "family": "chen",
+        "aliases": ["敬濟"],
+        "bio": "東京陳洪之子，娶西門慶元配之女西門大姐，因父案牽連寄居西門家代管家事，"
+               "趁機與潘金蓮私通；西門慶死後兩人姦情愈加放肆，事敗被逐，"
+               "輾轉淪落乞食、出家為道士，堪稱西門慶的衣缽傳人。",
+    },
+    {"id": "person_chen_hong", "name": "陳洪", "subtype": "kin", "family": "chen",
+     "aliases": [], "bio": "陳敬濟之父，楊提督黨羽，因案牽連舉家逃避，託子女寄居西門府。"},
+    {"id": "person_chen_ding", "name": "陳定", "subtype": "servant", "family": "chen",
+     "aliases": [], "bio": "陳家僕人。"},
+    {"id": "person_feng_jinbao", "name": "馮金寶", "subtype": "courtesan", "family": "chen",
+     "aliases": [], "bio": "臨清妓女，陳敬濟落魄後娶為妻。"},
+    {"id": "person_ge_cuiping", "name": "葛翠屏", "subtype": "kin", "family": "chen",
+     "aliases": [], "bio": "陳敬濟在守備府時娶的妻子。"},
+
+    # ---- 花家 ------------------------------------------------------------
+    {
+        "id": "person_hua_zixu", "name": "花子虛",
+        "subtype": "kin", "family": "hua", "aliases": ["子虛"],
+        "bio": "花太監之姪，繼承大筆家產，娶李瓶兒為妻，因浪蕩揮霍與人爭風被告官，"
+               "靠西門慶打點才得脫身，西門慶卻趁機與瓶兒私通並侵吞其家財，"
+               "子虛終在家財散盡、氣悶抑鬱中病死。",
+    },
+    {"id": "person_hua_taijian", "name": "花太監", "subtype": "official", "family": "hua",
+     "aliases": [], "bio": "廣南鎮守太監，花子虛之叔，家財萬貫，死後由子虛承繼。"},
+    {"id": "person_hua_dajiu", "name": "花大舅", "subtype": "kin", "family": "hua",
+     "aliases": ["花大"], "bio": "花子虛之兄，曾為爭產與子虛打官司。"},
+    {
+        "id": "person_jiang_zhushan", "name": "蔣竹山",
+        "subtype": "clergy", "family": "hua", "aliases": ["竹山", "蔣文蕙"],
+        "bio": "大街口的太醫，趁花子虛剛死、西門慶因案暫緩迎娶之際，以醫術與言語打動李瓶兒而入贅其家，"
+               "卻遭西門慶暗中報復被打傷誣陷，最終被瓶兒逐出家門。",
+    },
+    {"id": "person_liang_zhongshu", "name": "梁中書", "subtype": "official", "family": "hua",
+     "aliases": [], "bio": "大名府留守，李瓶兒的第一任主家，梁家被劫後瓶兒攜財出走。"},
+
+    # ---- 武家 ------------------------------------------------------------
+    {
+        "id": "person_wu_dalang", "name": "武大郎",
+        "subtype": "kin", "family": "wu", "aliases": ["武大"],
+        "bio": "潘金蓮的前夫，賣炊餅為生。潘金蓮和西門慶通姦，武大得到報信後前去捉姦，"
+               "反被西門慶踢傷，後被潘金蓮用西門慶提供的砒霜毒死。",
+    },
+    {
+        "id": "person_wu_song", "name": "武松",
+        "subtype": "main_character", "family": "wu", "aliases": ["武二郎", "武二"],
+        "bio": "武大郎的弟弟，景陽岡打虎英雄，因誤殺人而流放孟州，"
+               "後遇大赦歸來時西門慶已病死，於是殺死潘金蓮，投奔梁山。",
+    },
+    {"id": "person_yinger", "name": "迎兒", "subtype": "kin", "family": "wu",
+     "aliases": [], "bio": "武大郎與前妻之女，武大死後寄養於姚二郎家。"},
+    {
+        "id": "person_wang_po", "name": "王婆",
+        "subtype": "matchmaker", "family": "wu", "aliases": ["王婆子"],
+        "bio": "縣前街開茶坊，恰為潘金蓮鄰居，替西門慶設計撮合並獻毒計害死武大郎，"
+               "精於拉線、巧於策劃；西門慶死後又貪圖武松銀子逼金蓮就範，"
+               "最終與金蓮一同死於武松刀下。",
+    },
+    {"id": "person_wang_chaoer", "name": "王潮兒", "subtype": "other", "family": "wu",
+     "aliases": ["王潮"], "bio": "王婆之子，曾隨父販貨，後與潘金蓮有染。"},
+    {"id": "person_yunge", "name": "鄆哥", "subtype": "other", "family": "wu",
+     "aliases": [], "bio": "賣梨小廝，為武大通風報信並與王婆鬧茶坊。"},
+    {"id": "person_hejiu", "name": "何九", "subtype": "other", "family": "wu",
+     "aliases": [], "bio": "團頭仵作，收西門慶賄賂，隱瞞武大中毒的屍證。"},
+    {"id": "person_li_waizhuan", "name": "李外傳", "subtype": "other", "family": "wu",
+     "aliases": [], "bio": "縣衙皂隸，通風報信兩頭得錢，被武松誤打致死。"},
+
+    # ---- 韓家 ------------------------------------------------------------
+    {
+        "id": "person_han_daoguo", "name": "韓道國",
+        "subtype": "merchant", "family": "han", "aliases": ["韓夥計"],
+        "bio": "破落戶韓光頭之子，在西門慶絨線鋪當伙計，妻子王六兒與西門慶私通，"
+               "一家便靠這層裙帶關係得到不少好處；西門慶死後投奔東京翟管家，"
+               "待其失勢又輾轉返鄉重操舊業。",
+    },
+    {
+        "id": "person_wang_liuer", "name": "王六兒",
+        "subtype": "consort", "family": "han", "aliases": ["六兒", "王氏"],
+        "bio": "韓道國之妻，與西門慶私通並藉此讓夫家一同得利，家中大小事務打理得井井有條；"
+               "西門慶死後隨道國投奔東京，翟家失勢後返鄉重操舊業。",
+    },
+    {"id": "person_han_aijie", "name": "韓愛姐", "subtype": "kin", "family": "han",
+     "aliases": ["愛姐"], "bio": "韓道國與王六兒之女，入翟府為妾，後鍾情陳敬濟，敬濟死後守志出家。"},
+    {"id": "person_han_er", "name": "韓二", "subtype": "other", "family": "han",
+     "aliases": ["韓二搗鬼", "搗鬼"], "bio": "韓道國之弟，潑皮無賴，與嫂王六兒有染。"},
+
+    # ---- 王招宣府 --------------------------------------------------------
+    {
+        "id": "person_lin_taitai", "name": "林太太",
+        "subtype": "consort", "family": "wangzhaoxuan", "aliases": ["林氏"],
+        "bio": "王招宣府的貴婦人，招宣死後表面守寡，暗地卻與西門慶私通，"
+               "兒子王三官也終日與光棍鬼混嫖妓，正揭穿了外表雍容華貴、骨子裡藏污納垢的貴族世家秘密。",
+    },
+    {
+        "id": "person_wang_sanguan", "name": "王三官",
+        "subtype": "kin", "family": "wangzhaoxuan", "aliases": ["王三官兒"],
+        "bio": "王招宣府林太太之子，紈褲子弟，終日與幫閒光棍廝混嫖妓；"
+               "因母親林太太與西門慶私通，竟被收為義子，改口稱其為「四泉」。",
+    },
+    {"id": "person_wang_zhaoxuan", "name": "王招宣", "subtype": "official", "family": "wangzhaoxuan",
+     "aliases": [], "bio": "清河舊家貴族，早卒，遺下林太太與王三官。"},
+
+    # ---- 周守備府 --------------------------------------------------------
+    {"id": "person_zhou_shoubei", "name": "周守備", "subtype": "official", "family": "zhou",
+     "aliases": ["周秀", "周統制"], "bio": "清河守備，後升統制，娶春梅為妾並扶為正室，戰死於陣前。"},
+    {"id": "person_zhang_sheng", "name": "張勝", "subtype": "servant", "family": "zhou",
+     "aliases": [], "bio": "周守備府家丁，受春梅指使殺害陳敬濟，事發被打死。"},
+    {"id": "person_li_an", "name": "李安", "subtype": "servant", "family": "zhou",
+     "aliases": [], "bio": "周守備府家丁，不受春梅引誘，避禍遠去。"},
+    {"id": "person_sun_erniang", "name": "孫二娘", "subtype": "consort", "family": "zhou",
+     "aliases": [], "bio": "周守備之妾。"},
+    {"id": "person_zhou_yi", "name": "周義", "subtype": "servant", "family": "zhou",
+     "aliases": [], "bio": "周守備府小廝，與春梅私通。"},
+    {"id": "person_zhou_zhong", "name": "周忠", "subtype": "servant", "family": "zhou",
+     "aliases": [], "bio": "周守備府老家人。"},
+
+    # ---- 妓女、優伶 ------------------------------------------------------
+    {
+        "id": "person_li_guijie", "name": "李桂姐",
+        "subtype": "courtesan", "family": "courtesan", "aliases": ["桂姐", "桂姐兒"],
+        "bio": "麗春院妓女，李三媽之女、李嬌兒的姪女，被西門慶梳攏後又拜吳月娘為乾女兒，"
+               "趁勢出入西門府邀寵得利；西門慶死後見風轉舵，藉弔喪之機助李嬌兒盜取財物。",
+    },
+    {
+        "id": "person_zheng_aiyue", "name": "鄭愛月",
+        "subtype": "courtesan", "family": "courtesan", "aliases": ["愛月兒", "鄭愛月兒", "愛月"],
+        "bio": "鄭家妓院名妓，深得西門慶寵愛，同時又與林太太之子王三官、名妓李桂姐等人牽連複雜的男女關係，"
+               "巧施連環計促成西門慶與林太太的姦情。",
+    },
+    {"id": "person_wu_yiner", "name": "吳銀兒", "subtype": "courtesan", "family": "courtesan",
+     "aliases": ["銀兒"], "bio": "妓女，拜李瓶兒為乾娘，瓶兒死後守孝盡禮，是院中少見的有情人。"},
+    {"id": "person_zheng_aixiang", "name": "鄭愛香", "subtype": "courtesan", "family": "courtesan",
+     "aliases": ["愛香兒"], "bio": "鄭愛月之姊，亦為名妓。"},
+    {"id": "person_dong_jiaoer", "name": "董嬌兒", "subtype": "courtesan", "family": "courtesan",
+     "aliases": [], "bio": "清河妓女，常應局西門府酒席。"},
+    {"id": "person_han_jinchuan", "name": "韓金釧", "subtype": "courtesan", "family": "courtesan",
+     "aliases": ["金釧兒"], "bio": "院中妓女。"},
+    {"id": "person_li_guiqing", "name": "李桂卿", "subtype": "courtesan", "family": "courtesan",
+     "aliases": ["桂卿"], "bio": "李桂姐之姊，麗春院妓女。"},
+    {"id": "person_li_sanma", "name": "李三媽", "subtype": "courtesan", "family": "courtesan",
+     "aliases": ["李媽媽"], "bio": "麗春院鴇母，李桂姐之母。"},
+    {"id": "person_li_ming", "name": "李銘", "subtype": "courtesan", "family": "courtesan",
+     "aliases": [], "bio": "李嬌兒之兄，樂工，教西門府丫鬟彈唱。"},
+    {"id": "person_shen_erjie", "name": "申二姐", "subtype": "courtesan", "family": "courtesan",
+     "aliases": [], "bio": "盲女唱曲藝人，常出入西門府。"},
+    {"id": "person_duan_dajie", "name": "段大姐", "subtype": "courtesan", "family": "courtesan",
+     "aliases": [], "bio": "清河唱曲藝人。"},
+    {"id": "person_yu_dajie", "name": "鬱大姐", "subtype": "courtesan", "family": "courtesan",
+     "aliases": ["郁大姐"], "bio": "唱曲藝人，常在西門府走動。"},
+
+    # ---- 親族 ------------------------------------------------------------
+    {"id": "person_wu_dajiu", "name": "吳大舅", "subtype": "kin", "family": "ximen",
+     "aliases": ["吳鎧"], "bio": "吳月娘之兄，清河左衛千戶，西門慶最倚重的內親。"},
+    {"id": "person_wu_erjiu", "name": "吳二舅", "subtype": "kin", "family": "ximen",
+     "aliases": [], "bio": "吳月娘之弟，在西門府鋪中幫忙。"},
+    {"id": "person_wu_dajinzi", "name": "吳大妗子", "subtype": "kin", "family": "ximen",
+     "aliases": [], "bio": "吳大舅之妻，西門府常客。"},
+    {"id": "person_yang_guniang", "name": "楊姑娘", "subtype": "kin", "family": "ximen",
+     "aliases": [], "bio": "孟玉樓前夫楊宗錫之姑，力主玉樓改嫁西門慶，氣罵張四舅。"},
+    {"id": "person_zhang_si", "name": "張四", "subtype": "kin", "family": "ximen",
+     "aliases": [], "bio": "孟玉樓的舅舅，想把玉樓改配他人以圖財，與楊姑娘對罵落敗。"},
+    {"id": "person_meng_erjiu", "name": "孟二舅", "subtype": "kin", "family": "ximen",
+     "aliases": [], "bio": "孟玉樓之兄弟。"},
+    {"id": "person_pan_laolao", "name": "潘姥姥", "subtype": "kin", "family": "ximen",
+     "aliases": [], "bio": "潘金蓮之母，家貧，常來西門府卻不得女兒厚待。"},
+    {"id": "person_qiao_daohu", "name": "喬大戶", "subtype": "kin", "family": "ximen",
+     "aliases": ["喬親家"], "bio": "清河富戶，與西門慶結為兒女親家。"},
+    {"id": "person_qiao_wutaitai", "name": "喬五太太", "subtype": "kin", "family": "ximen",
+     "aliases": [], "bio": "喬家長輩，出入西門府擺闊。"},
+
+    # ---- 官場 ------------------------------------------------------------
+    {"id": "person_cai_jing", "name": "蔡京", "subtype": "official", "family": "court",
+     "aliases": ["蔡太師"], "bio": "當朝太師，西門慶認作乾爺，靠賄賂節節高升的最高靠山。"},
+    {"id": "person_zhai_qian", "name": "翟謙", "subtype": "official", "family": "court",
+     "aliases": ["翟管家", "翟親家"], "bio": "蔡京府中管家，西門慶在東京的門路，娶韓愛姐為妾。"},
+    {"id": "person_yang_jian", "name": "楊戩", "subtype": "official", "family": "court",
+     "aliases": ["楊提督"], "bio": "當朝提督，陳洪的靠山，被劾倒後連累陳家。"},
+    {"id": "person_xia_tixing", "name": "夏提刑", "subtype": "official", "family": "court",
+     "aliases": ["夏延齡", "夏龍溪"], "bio": "山東提刑所正千戶，西門慶的同僚，後調京任職。"},
+    {"id": "person_he_qianhu", "name": "何千戶", "subtype": "official", "family": "court",
+     "aliases": ["何永壽"], "bio": "接替夏提刑的千戶，何太監之姪。"},
+    {"id": "person_he_taijian", "name": "何太監", "subtype": "official", "family": "court",
+     "aliases": [], "bio": "內府太監，何千戶之叔，在東京款待西門慶。"},
+    {"id": "person_an_chen", "name": "安進士", "subtype": "official", "family": "court",
+     "aliases": ["安忱", "安郎中"], "bio": "西門慶結交的進士官員，屢次借西門府設席。"},
+    {"id": "person_cai_zhuangyuan", "name": "蔡狀元", "subtype": "official", "family": "court",
+     "aliases": ["蔡蘊", "蔡御史"], "bio": "蔡京假子，狀元出身，受西門慶饋贈後為其行方便。"},
+    {"id": "person_song_yushi", "name": "宋御史", "subtype": "official", "family": "court",
+     "aliases": ["宋喬年"], "bio": "山東巡按御史，屢受西門慶招待。"},
+    {"id": "person_jing_dujian", "name": "荊都監", "subtype": "official", "family": "court",
+     "aliases": ["荊忠"], "bio": "清河都監，西門慶的酒友同僚。"},
+    {"id": "person_zhang_tuanlian", "name": "張團練", "subtype": "official", "family": "court",
+     "aliases": [], "bio": "孟州團練，武松充配時的仇家背景人物。"},
+    {"id": "person_li_yanei", "name": "李衙內", "subtype": "official", "family": "court",
+     "aliases": ["李拱璧"], "bio": "嚴州李通判之子，清河知縣，續娶孟玉樓。"},
+    {"id": "person_huang_taiwei", "name": "黃太尉", "subtype": "official", "family": "court",
+     "aliases": ["六黃太尉"], "bio": "朝廷太尉，山東接駕時的貴賓，西門慶藉此揚名。"},
+    {"id": "person_zhu_taiwei", "name": "朱太尉", "subtype": "official", "family": "court",
+     "aliases": ["朱勔"], "bio": "當朝太尉，西門慶在東京參見的權貴。"},
+    {"id": "person_zhang_erguan", "name": "張二官", "subtype": "official", "family": "court",
+     "aliases": [], "bio": "清河新貴，西門慶死後接收其產業與李嬌兒。"},
+    {"id": "person_zeng_yushi", "name": "曾御史", "subtype": "official", "family": "court",
+     "aliases": ["曾孝序"], "bio": "上本參劾西門慶枉法受贓的御史，反被蔡京一黨貶斥。"},
+    {"id": "person_zhang_shuye", "name": "張叔夜", "subtype": "official", "family": "court",
+     "aliases": [], "bio": "濟南府官員，書末平亂的將領。"},
+    {"id": "person_liu_taijian", "name": "劉太監", "subtype": "official", "family": "court",
+     "aliases": [], "bio": "清河一帶的內相，與薛太監同為地方權貴。"},
+    {"id": "person_xue_taijian", "name": "薛太監", "subtype": "official", "family": "court",
+     "aliases": [], "bio": "清河一帶的內相。"},
+
+    # ---- 苗員外一案 ------------------------------------------------------
+    {"id": "person_miao_tianxiu", "name": "苗天秀", "subtype": "other", "family": "other",
+     "aliases": ["苗員外"], "bio": "揚州鄉紳，往東京訪友途中被家僕苗青謀害。"},
+    {"id": "person_miao_qing", "name": "苗青", "subtype": "other", "family": "other",
+     "aliases": [], "bio": "苗天秀家僕，勾結船家殺主奪財，賄賂西門慶得脫死罪。"},
+    {"id": "person_antong", "name": "安童", "subtype": "other", "family": "other",
+     "aliases": [], "bio": "苗天秀小廝，逃出後告官為主伸冤。"},
+
+    # ---- 僧道、術士、醫者 ------------------------------------------------
+    {"id": "person_pujing", "name": "普靜", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "永福寺老僧，書末幻度孝哥兒，超薦全書冤魂。"},
+    {"id": "person_hu_seng", "name": "胡僧", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "西域梵僧，贈西門慶春藥，成為他致命的緣由。"},
+    {"id": "person_wu_shenxian", "name": "吳神仙", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "相士，冰鑑定終身，為西門慶一家相面預示結局。"},
+    {"id": "person_pan_daoshi", "name": "潘道士", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "五嶽觀道士，為李瓶兒法遣黃巾力士禳解。"},
+    {"id": "person_huang_zhenren", "name": "黃真人", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "道官，為李瓶兒發牒薦亡。"},
+    {"id": "person_wang_guzi", "name": "王姑子", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "尼姑，出入西門府宣卷化緣，替吳月娘求子。"},
+    {"id": "person_xue_guzi", "name": "薛姑子", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "尼姑，佛口談經而貪財好利，與王姑子爭施主。"},
+    {"id": "person_ren_yiguan", "name": "任醫官", "subtype": "clergy", "family": "clergy",
+     "aliases": ["任後溪"], "bio": "清河醫官，多次為李瓶兒、西門慶診治。"},
+    {"id": "person_hu_taiyi", "name": "胡太醫", "subtype": "clergy", "family": "clergy",
+     "aliases": ["胡鬼嘴"], "bio": "清河庸醫，用藥不對症。"},
+    {"id": "person_ren_daoshi", "name": "任道士", "subtype": "clergy", "family": "clergy",
+     "aliases": [], "bio": "晏公廟道士，收陳敬濟為徒。"},
+    {"id": "person_wang_xingan", "name": "王杏庵", "subtype": "other", "family": "other",
+     "aliases": [], "bio": "清河義士，義恤落魄的陳敬濟。"},
+
+    # ---- 媒婆、牙婆 ------------------------------------------------------
+    {"id": "person_xue_sao", "name": "薛嫂", "subtype": "matchmaker", "family": "other",
+     "aliases": ["薛嫂兒"], "bio": "清河媒婆，說娶孟玉樓、賣春梅，一張利嘴牽動全書多樁婚配。"},
+    {"id": "person_wen_sao", "name": "文嫂", "subtype": "matchmaker", "family": "other",
+     "aliases": ["文嫂兒"], "bio": "媒婆，替西門慶勾搭林太太，往來王招宣府。"},
+    {"id": "person_han_sao", "name": "韓嫂", "subtype": "matchmaker", "family": "other",
+     "aliases": ["韓嫂兒"], "bio": "媒婆。"},
+    {"id": "person_tao_mama", "name": "陶媽媽", "subtype": "matchmaker", "family": "other",
+     "aliases": [], "bio": "媒婆，說合孟玉樓改嫁李衙內。"},
+    {"id": "person_zhang_mama", "name": "張媽媽", "subtype": "matchmaker", "family": "other",
+     "aliases": [], "bio": "媒婆。"},
+
+    # ---- 其他 ------------------------------------------------------------
+    {"id": "person_liu_er", "name": "劉二", "subtype": "other", "family": "other",
+     "aliases": [], "bio": "臨清酒店潑皮，張團練的小舅子，醉罵王六兒、撒潑大酒樓。"},
+    {"id": "person_song_ren", "name": "宋仁", "subtype": "other", "family": "other",
+     "aliases": [], "bio": "賣棺材的宋仁，宋蕙蓮之父，因女兒之死告官反被問罪。"},
+    {"id": "person_jiang_cong", "name": "蔣聰", "subtype": "other", "family": "other",
+     "aliases": [], "bio": "廚役，宋蕙蓮前夫，被人打死。"},
+    {"id": "person_yang_zongxi", "name": "楊宗錫", "subtype": "other", "family": "other",
+     "aliases": ["楊宗保"], "bio": "布商，孟玉樓的前夫，病故後留下豐厚家財。"},
+]
+
+# --------------------------------------------------------------------------
+# 建築／空間
+# --------------------------------------------------------------------------
+
+BUILDINGS: list[dict] = [
+    {"id": "building_ximen_fu", "name": "西門府", "subtype": "mansion",
+     "aliases": ["西門慶家", "西門慶宅"], "bio": "西門慶在清河縣的宅第，全書的核心舞台。"},
+    {"id": "building_huayuan", "name": "花園", "subtype": "garden_space",
+     "aliases": ["後花園"], "bio": "西門府併吞花家宅地後修築的園子，是全書幽會、飲宴的主場景。"},
+    {"id": "building_feicuixuan", "name": "翡翠軒", "subtype": "garden_space",
+     "aliases": [], "bio": "西門府花園中的軒館，李瓶兒私語處。"},
+    {"id": "building_cangchunwu", "name": "藏春塢", "subtype": "garden_space",
+     "aliases": ["藏春塢雪洞"], "bio": "西門府花園裡的雪洞書房，西門慶與潘金蓮的密處。"},
+    {"id": "building_putaojia", "name": "葡萄架", "subtype": "garden_space",
+     "aliases": [], "bio": "花園中的葡萄架，第二十七回「潘金蓮醉鬧葡萄架」的所在。"},
+    {"id": "building_furongting", "name": "芙蓉亭", "subtype": "garden_space",
+     "aliases": [], "bio": "西門府園中亭子，妻妾玩賞之處。"},
+    {"id": "building_juanpeng", "name": "捲棚", "subtype": "room",
+     "aliases": ["卷棚"], "bio": "西門府待客的敞廳，宴飲、聽戲多在此處。"},
+    {"id": "building_yimen", "name": "儀門", "subtype": "room",
+     "aliases": ["儀門首"], "bio": "西門府內外院的分界門，家中出入的關口。"},
+    {"id": "building_shangfang", "name": "上房", "subtype": "room",
+     "aliases": [], "bio": "吳月娘所居正房，家中議事與待客之所。"},
+    {"id": "building_lichunyuan", "name": "麗春院", "subtype": "brothel",
+     "aliases": ["院中"], "bio": "清河妓院，李嬌兒、李桂姐的出身之地。"},
+    {"id": "building_shizi_jie", "name": "獅子街", "subtype": "street",
+     "aliases": ["獅子街房子"], "bio": "李瓶兒陪嫁的臨街樓房，元宵看燈與王六兒私會之處。"},
+    {"id": "building_zishi_jie", "name": "紫石街", "subtype": "street",
+     "aliases": [], "bio": "武大郎與潘金蓮賃居之處，全書故事的起點。"},
+    {"id": "building_xianqian_jie", "name": "縣前街", "subtype": "street",
+     "aliases": [], "bio": "王婆茶坊所在，撮合西門慶與潘金蓮的場所。"},
+    {"id": "building_wangzhaoxuan_fu", "name": "王招宣府", "subtype": "mansion",
+     "aliases": ["招宣府"], "bio": "清河舊族宅第，林太太與王三官的居所。"},
+    {"id": "building_shoubei_fu", "name": "守備府", "subtype": "mansion",
+     "aliases": ["周守備府"], "bio": "周守備官邸，春梅改嫁後的發跡之地。"},
+    {"id": "building_tixing_suo", "name": "提刑所", "subtype": "office",
+     "aliases": ["提刑院"], "bio": "山東提刑所，西門慶納粟得官後理刑的衙門。"},
+    {"id": "building_xianya", "name": "縣衙", "subtype": "office",
+     "aliases": [], "bio": "清河縣衙，武松告狀、西門慶用錢打點之處。"},
+    {"id": "building_yongfu_si", "name": "永福寺", "subtype": "temple",
+     "aliases": [], "bio": "清河古剎，普靜和尚駐錫，書末幻度孝哥兒的地方。"},
+    {"id": "building_baoen_si", "name": "報恩寺", "subtype": "temple",
+     "aliases": [], "bio": "清河寺院，西門府做法事之處。"},
+    {"id": "building_yuhuang_miao", "name": "玉皇廟", "subtype": "temple",
+     "aliases": [], "bio": "吳道官所住道觀，西門慶十兄弟結拜與官哥寄名處。"},
+    {"id": "building_yongong_miao", "name": "晏公廟", "subtype": "temple",
+     "aliases": [], "bio": "臨清道觀，陳敬濟出家為道士之地。"},
+    {"id": "building_bixia_gong", "name": "碧霞宮", "subtype": "temple",
+     "aliases": ["岱嶽廟"], "bio": "泰安州泰山娘娘廟，吳月娘進香遇險處。"},
+    {"id": "building_chaoguan", "name": "鈔關", "subtype": "office",
+     "aliases": ["臨清鈔關"], "bio": "臨清運河稅關，西門慶托官情偷稅販貨的關卡。"},
+]
+
+# --------------------------------------------------------------------------
+# 地名
+# --------------------------------------------------------------------------
+
+PLACES: list[dict] = [
+    {"id": "place_qinghe", "name": "清河縣", "subtype": "county",
+     "aliases": ["清河"], "bio": "山東東平府屬縣，西門慶一家所在，全書主場景。"},
+    {"id": "place_dongjing", "name": "東京", "subtype": "capital",
+     "aliases": ["京師"], "bio": "北宋都城開封，蔡京、翟謙所在，西門慶鑽營官場的方向。"},
+    {"id": "place_linqing", "name": "臨清", "subtype": "town",
+     "aliases": ["臨清碼頭"], "bio": "運河重鎮，西門慶貨船必經的稅關與商埠。"},
+    {"id": "place_dongping_fu", "name": "東平府", "subtype": "prefecture",
+     "aliases": [], "bio": "清河縣所屬的府治，陳文昭曾在此審理武松案。"},
+    {"id": "place_shandong", "name": "山東", "subtype": "province",
+     "aliases": [], "bio": "全書地理背景，提刑所、巡按御史的轄區。"},
+    {"id": "place_yangzhou", "name": "揚州", "subtype": "city",
+     "aliases": [], "bio": "西門慶販鹽與苗員外的故鄉。"},
+    {"id": "place_hangzhou", "name": "杭州", "subtype": "city",
+     "aliases": [], "bio": "西門慶派來保採辦綢緞之地。"},
+    {"id": "place_huzhou", "name": "湖州", "subtype": "city",
+     "aliases": [], "bio": "西門慶絲綢貨源地。"},
+    {"id": "place_yangu", "name": "陽穀縣", "subtype": "county",
+     "aliases": [], "bio": "武松打虎後充任都頭的縣分。"},
+    {"id": "place_jingyanggang", "name": "景陽岡", "subtype": "landmark",
+     "aliases": [], "bio": "武松打虎之地，人物由《水滸傳》入書的接榫。"},
+    {"id": "place_mengzhou", "name": "孟州", "subtype": "city",
+     "aliases": [], "bio": "武松刺配之地。"},
+    {"id": "place_xuzhou", "name": "徐州", "subtype": "city",
+     "aliases": [], "bio": "來旺被遞解之地。"},
+    {"id": "place_taian", "name": "泰安州", "subtype": "city",
+     "aliases": ["泰安"], "bio": "泰山所在，吳月娘進香處。"},
+    {"id": "place_jinan", "name": "濟南", "subtype": "city",
+     "aliases": ["濟南府"], "bio": "山東首府，張叔夜駐節之地。"},
+    {"id": "place_yanzhou", "name": "嚴州", "subtype": "city",
+     "aliases": [], "bio": "李通判任所，陳敬濟被陷之地。"},
+    {"id": "place_dongchang", "name": "東昌", "subtype": "city",
+     "aliases": ["東昌府"], "bio": "山東府治，官場往來之地。"},
+    {"id": "place_kaifeng", "name": "開封", "subtype": "city",
+     "aliases": ["開封府"], "bio": "東京府治。"},
+]
+
+# --------------------------------------------------------------------------
+# 身份稱謂
+# --------------------------------------------------------------------------
+
+TITLE_ROLES: list[dict] = [
+    {"id": "role_daguanren", "name": "大官人", "subtype": "title", "aliases": []},
+    {"id": "role_niangzi", "name": "娘子", "subtype": "title", "aliases": []},
+    {"id": "role_furen", "name": "婦人", "subtype": "title", "aliases": []},
+    {"id": "role_yahuan", "name": "丫鬟", "subtype": "role", "aliases": ["丫頭"]},
+    {"id": "role_xiaosi", "name": "小廝", "subtype": "role", "aliases": []},
+    {"id": "role_huoji", "name": "夥計", "subtype": "role", "aliases": ["伙計"]},
+    {"id": "role_bangxian", "name": "幫閒", "subtype": "role", "aliases": []},
+    {"id": "role_fentou", "name": "粉頭", "subtype": "role", "aliases": []},
+    {"id": "role_changde", "name": "唱的", "subtype": "role", "aliases": ["小優兒"]},
+    {"id": "role_meipo", "name": "媒婆", "subtype": "role", "aliases": ["牙婆"]},
+    {"id": "role_naizi", "name": "奶子", "subtype": "role", "aliases": []},
+    {"id": "role_heshang", "name": "和尚", "subtype": "role", "aliases": ["僧人"]},
+    {"id": "role_daoshi", "name": "道士", "subtype": "role", "aliases": ["道人"]},
+    {"id": "role_guzi", "name": "姑子", "subtype": "role", "aliases": ["尼姑"]},
+    {"id": "role_taiyi", "name": "太醫", "subtype": "role", "aliases": ["醫官"]},
+    {"id": "role_taijian", "name": "太監", "subtype": "official_title", "aliases": ["內相"]},
+    {"id": "role_tixing", "name": "提刑", "subtype": "official_title", "aliases": ["理刑"]},
+    {"id": "role_qianhu", "name": "千戶", "subtype": "official_title", "aliases": []},
+    {"id": "role_shoubei", "name": "守備", "subtype": "official_title", "aliases": []},
+    {"id": "role_dujian", "name": "都監", "subtype": "official_title", "aliases": []},
+    {"id": "role_yushi", "name": "御史", "subtype": "official_title", "aliases": ["巡按"]},
+    {"id": "role_taishi", "name": "太師", "subtype": "official_title", "aliases": []},
+    {"id": "role_zhixian", "name": "知縣", "subtype": "official_title", "aliases": ["縣主"]},
+    {"id": "role_dutou", "name": "都頭", "subtype": "official_title", "aliases": []},
+    {"id": "role_yayi", "name": "衙內", "subtype": "official_title", "aliases": []},
+]
+
+# --------------------------------------------------------------------------
+# 意象／器物
+#
+# 《金瓶梅》的主題是「酒色財氣」，物件本身就是敘事的symbol：
+# 銀子牽動人情，藥與器具貫穿情慾，燈與雪標記時序與命運。
+# --------------------------------------------------------------------------
+
+MOTIFS: list[dict] = [
+    {"id": "motif_yinzi", "name": "銀子", "subtype": "財", "aliases": ["銀兩", "白銀", "金銀"]},
+    {"id": "motif_dangpu", "name": "當鋪", "subtype": "財", "aliases": ["解當鋪"]},
+    {"id": "motif_jiu", "name": "酒席", "subtype": "酒", "aliases": ["吃酒", "酒筵", "金華酒", "葡萄酒", "麻姑酒"]},
+    {"id": "motif_chunyao", "name": "春藥", "subtype": "色", "aliases": ["胡僧藥", "顫聲嬌"]},
+    {"id": "motif_yintuozi", "name": "銀托子", "subtype": "色", "aliases": ["勉鈴", "白綾帶", "相思套"]},
+    {"id": "motif_hanjin", "name": "汗巾", "subtype": "色", "aliases": []},
+    {"id": "motif_xieer", "name": "鞋兒", "subtype": "色", "aliases": ["繡鞋", "睡鞋"]},
+    {"id": "motif_zaner", "name": "簪兒", "subtype": "色", "aliases": ["金簪", "頭面", "分心"]},
+    {"id": "motif_xiangcha", "name": "香茶", "subtype": "色", "aliases": ["香茶木樨餅"]},
+    {"id": "motif_pipa", "name": "琵琶", "subtype": "藝", "aliases": ["月琴"]},
+    {"id": "motif_baojuan", "name": "寶卷", "subtype": "藝", "aliases": ["宣卷", "佛曲"]},
+    {"id": "motif_xiwen", "name": "戲文", "subtype": "藝", "aliases": ["海鹽子弟"]},
+    {"id": "motif_yuanxiao", "name": "元宵", "subtype": "節候", "aliases": ["燈市", "燈節", "走百病"]},
+    {"id": "motif_zhongqiu", "name": "中秋", "subtype": "節候", "aliases": []},
+    {"id": "motif_xue", "name": "雪", "subtype": "節候", "aliases": []},
+    {"id": "motif_guancai", "name": "棺材", "subtype": "死生", "aliases": ["棺木", "壽衣"]},
+    {"id": "motif_lingchuang", "name": "靈床", "subtype": "死生", "aliases": ["靈前", "孝堂"]},
+    {"id": "motif_meng", "name": "夢見", "subtype": "死生", "aliases": ["夢中", "託夢"]},
+    {"id": "motif_suanming", "name": "算命", "subtype": "命數", "aliases": ["相面", "卜龜兒"]},
+    {"id": "motif_baoying", "name": "報應", "subtype": "命數", "aliases": ["業障"]},
+]
+
+
+ALL_GROUPS = [
+    ("PERSON", "人物", PERSONS),
+    ("BUILDING", "建築", BUILDINGS),
+    ("PLACE", "地點", PLACES),
+    ("TITLE_ROLE", "身份", TITLE_ROLES),
+    ("MOTIF", "意象", MOTIFS),
+]
+
+
+def iter_entities():
+    """走訪所有實體，產出 (entity_type, entity_type_zh, entity dict)。"""
+    for entity_type, type_zh, rows in ALL_GROUPS:
+        for row in rows:
+            yield entity_type, type_zh, row
+
+
+def surface_forms(row: dict) -> list[str]:
+    """正名加別名，去重後保持原順序。"""
+    forms = [row["name"], *row.get("aliases", [])]
+    seen, out = set(), []
+    for form in forms:
+        if form and form not in seen:
+            seen.add(form)
+            out.append(form)
+    return out

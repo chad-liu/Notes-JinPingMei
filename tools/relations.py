@@ -1,0 +1,231 @@
+"""《金瓶梅》人物語義關係表。
+
+與「同段共現」不同，這裡是人工整理的確定關係：婚配、親屬、私通、主僕、
+結拜幫閒、官場往來與仇讎。資料來源為 data/金瓶梅人物關係.md 與小說情節。
+
+每筆：(來源, 對象, 關係類型, 關係標籤, 說明)
+關係類型：marriage 婚配／kin 親屬／romance 私通情感／servant 主僕／
+          ally 結拜幫閒／patron 官場依附／conflict 仇讎
+"""
+
+from __future__ import annotations
+
+X = "person_ximen_qing"
+
+RELATIONS: list[tuple[str, str, str, str, str]] = [
+    # ---- 西門慶的妻妾 ----------------------------------------------------
+    (X, "person_chenshi", "marriage", "元配", "西門慶先頭渾家，早逝。"),
+    (X, "person_wu_yueniang", "marriage", "正室（填房）", "吳千戶之女，繼室，人稱大娘。"),
+    (X, "person_li_jiaoer", "marriage", "第二房妾", "妓院出身，應伯爵做媒。"),
+    (X, "person_zhuo_diuer", "marriage", "第三房妾", "南街窠子卓二姐，入門未久即亡。"),
+    (X, "person_meng_yulou", "marriage", "第三房妾", "布商楊宗錫遺孀，薛嫂做媒。"),
+    (X, "person_sun_xuee", "marriage", "第四房妾", "陳氏陪嫁丫頭收房。"),
+    (X, "person_pan_jinlian", "marriage", "第五房妾", "毒殺武大郎後偷娶進門。"),
+    (X, "person_li_pinger", "marriage", "第六房妾", "花子虛之妻，攜家產改嫁。"),
+    (X, "person_pang_chunmei", "romance", "收房丫頭", "潘金蓮薦於西門慶。"),
+
+    # ---- 西門慶的私通對象 ------------------------------------------------
+    (X, "person_song_huilian", "romance", "私通", "來旺之妻，因私通得寵。"),
+    (X, "person_wang_liuer", "romance", "包占", "韓道國之妻。"),
+    (X, "person_lin_taitai", "romance", "私通", "文嫂牽線，王招宣府貴婦。"),
+    (X, "person_ruyier", "romance", "私通", "官哥奶媽，瓶兒死後頂替其位。"),
+    (X, "person_bensi_sao", "romance", "私通", "賁四之妻。"),
+    (X, "person_li_guijie", "romance", "梳攏包占", "麗春院名妓。"),
+    (X, "person_zheng_aiyue", "romance", "包占", "鄭家妓院名妓。"),
+    (X, "person_wu_yiner", "romance", "應酬", "妓女，拜李瓶兒為乾娘。"),
+    (X, "person_shutong", "romance", "男寵", "書房小廝，因貌美受寵。"),
+
+    # ---- 西門慶家的親屬 --------------------------------------------------
+    (X, "person_ximen_dajie", "kin", "父女", "西門慶與陳氏所生。"),
+    (X, "person_guange", "kin", "父子", "李瓶兒所生，未滿週歲夭折。"),
+    (X, "person_xiaoge", "kin", "父子", "吳月娘所生，書末出家。"),
+    ("person_li_pinger", "person_guange", "kin", "母子", "官哥為瓶兒所生。"),
+    ("person_wu_yueniang", "person_xiaoge", "kin", "母子", "孝哥為月娘所生。"),
+    ("person_wu_yueniang", "person_wu_dajiu", "kin", "兄妹", "吳大舅為月娘之兄。"),
+    ("person_wu_yueniang", "person_wu_erjiu", "kin", "姊弟", "吳二舅為月娘之弟。"),
+    ("person_wu_dajiu", "person_wu_dajinzi", "marriage", "夫妻", "吳大舅與吳大妗子。"),
+    ("person_pan_jinlian", "person_pan_laolao", "kin", "母女", "潘姥姥為金蓮之母。"),
+    ("person_meng_yulou", "person_yang_zongxi", "marriage", "前夫", "玉樓原為楊宗錫之妻。"),
+    ("person_meng_yulou", "person_yang_guniang", "kin", "姑姪媳", "楊姑娘力主玉樓改嫁。"),
+    ("person_meng_yulou", "person_zhang_si", "kin", "舅甥媳", "張四舅欲阻玉樓改嫁圖財。"),
+    ("person_yang_guniang", "person_zhang_si", "conflict", "口角", "楊姑娘氣罵張四舅。"),
+    ("person_meng_yulou", "person_meng_erjiu", "kin", "兄妹", "孟二舅為玉樓兄弟。"),
+    ("person_li_jiaoer", "person_li_guijie", "kin", "姑姪", "李桂姐為李嬌兒姪女。"),
+    ("person_li_jiaoer", "person_li_ming", "kin", "兄妹", "李銘為李嬌兒之兄。"),
+    (X, "person_qiao_daohu", "kin", "兒女親家", "官哥與喬大戶之女結親。"),
+
+    # ---- 陳家 ------------------------------------------------------------
+    ("person_chen_jingji", "person_ximen_dajie", "marriage", "夫妻", "陳敬濟娶西門大姐。"),
+    ("person_chen_jingji", "person_chen_hong", "kin", "父子", "陳洪為敬濟之父。"),
+    (X, "person_chen_jingji", "kin", "翁婿", "敬濟因父案寄居西門府。"),
+    ("person_chen_jingji", "person_pan_jinlian", "romance", "私通", "全書後半的核心姦情。"),
+    ("person_chen_jingji", "person_pang_chunmei", "romance", "私通", "春梅在守備府收留敬濟。"),
+    ("person_chen_jingji", "person_feng_jinbao", "marriage", "續娶", "臨清妓女。"),
+    ("person_chen_jingji", "person_ge_cuiping", "marriage", "續娶", "守備府作媒。"),
+    ("person_chen_jingji", "person_han_aijie", "romance", "情緣", "愛姐為敬濟守志。"),
+    ("person_chen_jingji", "person_zhang_sheng", "conflict", "仇殺", "張勝受春梅指使殺敬濟。"),
+    ("person_chen_jingji", "person_sun_xuee", "conflict", "仇怨", "雪娥唆打陳敬濟。"),
+
+    # ---- 花家 ------------------------------------------------------------
+    ("person_hua_zixu", "person_li_pinger", "marriage", "夫妻", "瓶兒原為子虛之妻。"),
+    ("person_hua_zixu", "person_hua_taijian", "kin", "叔姪", "花太監家產由子虛承繼。"),
+    ("person_hua_zixu", "person_hua_dajiu", "kin", "兄弟", "曾為爭產打官司。"),
+    (X, "person_hua_zixu", "ally", "結拜兄弟", "十兄弟之一，卻遭西門慶吞其家財。"),
+    ("person_li_pinger", "person_jiang_zhushan", "marriage", "招贅", "子虛死後短暫入贅。"),
+    (X, "person_jiang_zhushan", "conflict", "報復", "西門慶使草裡蛇邏打蔣竹山。"),
+    ("person_li_pinger", "person_liang_zhongshu", "marriage", "前夫", "大名府梁中書。"),
+    ("person_li_pinger", "person_yingchun", "servant", "主僕", "迎春為瓶兒貼身丫頭。"),
+    ("person_li_pinger", "person_xiuchun", "servant", "主僕", "繡春為瓶兒房中丫頭。"),
+    ("person_li_pinger", "person_feng_mama", "servant", "主僕", "馮媽媽替瓶兒看房傳話。"),
+    ("person_li_pinger", "person_wu_yiner", "kin", "乾母女", "吳銀兒拜瓶兒為乾娘。"),
+
+    # ---- 武家 ------------------------------------------------------------
+    ("person_wu_dalang", "person_pan_jinlian", "marriage", "夫妻", "金蓮原為武大之妻。"),
+    ("person_wu_dalang", "person_wu_song", "kin", "兄弟", "武松為武大之弟。"),
+    ("person_wu_dalang", "person_yinger", "kin", "父女", "迎兒為武大之女。"),
+    ("person_pan_jinlian", "person_wu_song", "romance", "求歡不成", "金蓮挑逗武松被拒。"),
+    ("person_wu_song", "person_pan_jinlian", "conflict", "殺嫂", "武松殺嫂祭兄。"),
+    ("person_wu_song", X, "conflict", "仇讎", "歸來時西門慶已死。"),
+    ("person_wu_song", "person_wang_po", "conflict", "仇殺", "王婆與金蓮同死於武松刀下。"),
+    ("person_wang_po", "person_pan_jinlian", "ally", "撮合設計", "縣前街茶坊撮合並獻毒計。"),
+    (X, "person_wang_po", "ally", "撮合設計", "王婆為西門慶設十分光計。"),
+    ("person_wang_po", "person_wang_chaoer", "kin", "母子", "王潮兒為王婆之子。"),
+    ("person_wu_dalang", "person_yunge", "ally", "通風報信", "鄆哥報信助武大捉姦。"),
+    ("person_yunge", "person_wang_po", "conflict", "鬧茶坊", "鄆哥義憤鬧王婆茶坊。"),
+    (X, "person_hejiu", "patron", "行賄", "何九受賄瞞下武大屍證。"),
+    ("person_wu_song", "person_li_waizhuan", "conflict", "誤打致死", "武松誤打李皂隸。"),
+
+    # ---- 韓家 ------------------------------------------------------------
+    ("person_han_daoguo", "person_wang_liuer", "marriage", "夫妻", "靠妻與西門慶的關係得利。"),
+    ("person_han_daoguo", "person_han_aijie", "kin", "父女", "愛姐為韓家之女。"),
+    ("person_han_daoguo", "person_han_er", "kin", "兄弟", "韓二為道國之弟。"),
+    ("person_wang_liuer", "person_han_er", "romance", "叔嫂私通", "書中屢次點出。"),
+    (X, "person_han_daoguo", "patron", "東家夥計", "絨線鋪夥計。"),
+    ("person_han_aijie", "person_zhai_qian", "marriage", "妾", "愛姐入翟府為妾。"),
+    ("person_wang_liuer", "person_wangjing", "kin", "姑姪", "王經為六兒姪兒。"),
+
+    # ---- 王招宣府 --------------------------------------------------------
+    ("person_lin_taitai", "person_wang_sanguan", "kin", "母子", "王三官為林太太之子。"),
+    ("person_lin_taitai", "person_wang_zhaoxuan", "marriage", "夫妻", "招宣死後林太太守寡。"),
+    (X, "person_wang_sanguan", "kin", "義父子", "三官拜西門慶為義父，稱其四泉。"),
+    ("person_wang_sanguan", "person_li_guijie", "romance", "嫖妓", "被鄭愛月連環計拆散。"),
+    (X, "person_wen_sao", "ally", "牽線", "文嫂替西門慶勾搭林太太。"),
+    ("person_lin_taitai", "person_wen_sao", "ally", "牽線", "文嫂往來招宣府。"),
+
+    # ---- 周守備府 --------------------------------------------------------
+    ("person_zhou_shoubei", "person_pang_chunmei", "marriage", "妾後扶正", "春梅生子扶正為夫人。"),
+    ("person_zhou_shoubei", "person_sun_erniang", "marriage", "妾", "守備府側室。"),
+    ("person_zhou_shoubei", "person_zhang_sheng", "servant", "主僕", "守備府家丁。"),
+    ("person_zhou_shoubei", "person_li_an", "servant", "主僕", "守備府家丁。"),
+    ("person_pang_chunmei", "person_zhou_yi", "romance", "私通", "守備出征後縱情。"),
+    ("person_pang_chunmei", "person_sun_xuee", "conflict", "仇怨", "春梅用計整治孫雪娥。"),
+    ("person_pang_chunmei", "person_pan_jinlian", "ally", "主僕情誼", "春梅厚葬金蓮。"),
+
+    # ---- 西門府主僕 ------------------------------------------------------
+    (X, "person_daian", "servant", "主僕", "最得力的心腹小廝。"),
+    (X, "person_pingan", "servant", "主僕", "看門小廝。"),
+    (X, "person_laiwang", "servant", "主僕", "家僕，後遞解徐州。"),
+    (X, "person_laibao", "servant", "主僕", "管事家僕，常往東京。"),
+    (X, "person_laixing", "servant", "主僕", "家僕。"),
+    (X, "person_laijue", "servant", "主僕", "家僕。"),
+    (X, "person_laizhao", "servant", "主僕", "家僕。"),
+    (X, "person_qintong", "servant", "主僕", "小廝。"),
+    (X, "person_huatong", "servant", "主僕", "小廝。"),
+    (X, "person_chunhong", "servant", "主僕", "蘇州歌童。"),
+    (X, "person_wangjing", "servant", "主僕", "收用的小廝。"),
+    (X, "person_fu_huoji", "patron", "東家夥計", "生藥鋪老夥計。"),
+    (X, "person_gan_huoji", "patron", "東家夥計", "絨線鋪夥計。"),
+    (X, "person_ben_si", "patron", "東家夥計", "管工程與鋪面。"),
+    (X, "person_cui_ben", "patron", "東家夥計", "緞子鋪夥計。"),
+    (X, "person_wen_bigu", "patron", "西席", "代筆書啟往來。"),
+    (X, "person_wu_dianen", "patron", "提攜", "受西門慶保薦得官。"),
+    ("person_laiwang", "person_song_huilian", "marriage", "夫妻", "蕙蓮為來旺之妻。"),
+    ("person_laiwang", "person_sun_xuee", "romance", "私通", "西門慶死後同逃。"),
+    ("person_laizhao", "person_yizhangqing", "marriage", "夫妻", "一丈青為來昭之妻。"),
+    ("person_laixing", "person_huixiang", "marriage", "夫妻", "惠祥為來興之妻。"),
+    ("person_laijue", "person_huiyuan", "marriage", "夫妻", "惠元為來爵之妻。"),
+    ("person_ben_si", "person_bensi_sao", "marriage", "夫妻", "賁四嫂為賁四之妻。"),
+    ("person_daian", "person_bensi_sao", "romance", "私通", "主僕同槽共食。"),
+    ("person_daian", "person_xiaoyu", "marriage", "夫妻", "月娘撮合成親。"),
+    ("person_wu_yueniang", "person_daian", "kin", "義母子", "月娘認玳安為子，改名西門安。"),
+    ("person_wu_yueniang", "person_xiaoyu", "servant", "主僕", "小玉為月娘貼身丫頭。"),
+    ("person_wu_yueniang", "person_yuxiao", "servant", "主僕", "玉簫為月娘房中丫鬟。"),
+    ("person_yuxiao", "person_shutong", "romance", "有染", "書童與玉簫私情。"),
+    ("person_pan_jinlian", "person_pang_chunmei", "servant", "主僕", "春梅轉為伺候金蓮。"),
+    ("person_pan_jinlian", "person_chunmei_qiuju", "servant", "主僕", "秋菊屢遭凌虐。"),
+    ("person_pang_chunmei", "person_chunmei_qiuju", "conflict", "凌虐", "春梅與金蓮共同責打秋菊。"),
+    ("person_meng_yulou", "person_lanxiang", "servant", "主僕", "蘭香為玉樓房中丫鬟。"),
+    ("person_sun_xuee", "person_zhongqiu", "servant", "主僕", "中秋兒為雪娥丫鬟。"),
+    ("person_pan_jinlian", "person_sun_xuee", "conflict", "仇怨", "金蓮激打孫雪娥。"),
+    ("person_pan_jinlian", "person_li_pinger", "conflict", "妒恨", "因官哥出生結怨。"),
+    ("person_pan_jinlian", "person_song_huilian", "conflict", "設計陷害", "金蓮設計害來旺以除蕙蓮。"),
+    ("person_pan_jinlian", "person_li_jiaoer", "conflict", "對頭", "李嬌兒與雪娥同為金蓮對頭。"),
+    ("person_song_huilian", "person_song_ren", "kin", "父女", "宋仁告官反被問罪。"),
+    ("person_song_huilian", "person_jiang_cong", "marriage", "前夫", "廚役蔣聰。"),
+    ("person_ruyier", "person_guange", "servant", "乳母", "官哥的奶媽。"),
+    ("person_ruyier", "person_xiaoge", "servant", "乳母", "瓶兒死後改侍孝哥。"),
+
+    # ---- 結拜十兄弟與幫閒 -------------------------------------------------
+    (X, "person_ying_bojue", "ally", "結拜兄弟", "十兄弟中排行第二，幫閒領班。"),
+    (X, "person_xie_xida", "ally", "結拜兄弟", "十兄弟之一。"),
+    (X, "person_zhu_shinian", "ally", "結拜兄弟", "十兄弟之一。"),
+    (X, "person_sun_guazui", "ally", "結拜兄弟", "十兄弟之一。"),
+    (X, "person_chang_zhijie", "ally", "結拜兄弟", "十兄弟中排行老九。"),
+    (X, "person_bai_laiguang", "ally", "結拜兄弟", "十兄弟之一。"),
+    (X, "person_yun_lishou", "ally", "結拜兄弟", "十兄弟之一。"),
+    (X, "person_bu_zhidao", "ally", "結拜兄弟", "開篇即亡，由花子虛遞補。"),
+    ("person_ying_bojue", "person_xie_xida", "ally", "幫閒同伴", "兩人常相伴出入。"),
+    ("person_ying_bojue", "person_li_jiaoer", "ally", "做媒", "伯爵為西門慶說合李嬌兒。"),
+    ("person_ying_bojue", "person_li_guijie", "ally", "引薦", "引西門慶入麗春院。"),
+
+    # ---- 官場依附 --------------------------------------------------------
+    (X, "person_cai_jing", "patron", "認乾爺", "西門慶靠蔡京鑽營得官。"),
+    (X, "person_zhai_qian", "patron", "東京門路", "蔡府管家，互通聲氣。"),
+    ("person_cai_jing", "person_zhai_qian", "servant", "主僕", "翟謙為蔡京管家。"),
+    (X, "person_xia_tixing", "ally", "同僚", "提刑所正副千戶。"),
+    (X, "person_he_qianhu", "ally", "同僚", "接替夏提刑。"),
+    ("person_he_qianhu", "person_he_taijian", "kin", "叔姪", "何太監為何千戶之叔。"),
+    (X, "person_cai_zhuangyuan", "patron", "饋贈", "蔡狀元受贈後為西門慶行方便。"),
+    (X, "person_an_chen", "ally", "官場往來", "安進士屢借西門府設席。"),
+    (X, "person_song_yushi", "patron", "官場往來", "巡按御史，受西門慶招待。"),
+    (X, "person_jing_dujian", "ally", "同僚酒友", "清河都監。"),
+    (X, "person_huang_taiwei", "patron", "接駕", "山東接駕，西門慶藉此揚名。"),
+    (X, "person_zhu_taiwei", "patron", "參見", "東京權貴。"),
+    (X, "person_zeng_yushi", "conflict", "參劾", "曾御史上本參劾西門慶枉法受贓。"),
+    ("person_cai_jing", "person_zeng_yushi", "conflict", "貶斥", "蔡京一黨反貶曾御史。"),
+    ("person_chen_hong", "person_yang_jian", "patron", "黨羽", "陳洪為楊提督黨羽。"),
+    (X, "person_miao_qing", "patron", "受賄枉法", "西門枉法受贓放走苗青。"),
+    ("person_miao_qing", "person_miao_tianxiu", "conflict", "謀主奪財", "苗青殺主。"),
+    ("person_miao_tianxiu", "person_antong", "servant", "主僕", "安童告官為主伸冤。"),
+    ("person_li_yanei", "person_meng_yulou", "marriage", "續娶", "玉樓改嫁李衙內。"),
+    ("person_zhang_erguan", "person_li_jiaoer", "marriage", "改嫁", "嬌兒拐財改嫁張二官。"),
+
+    # ---- 僧道術士醫者 ----------------------------------------------------
+    (X, "person_hu_seng", "patron", "求藥", "胡僧贈春藥，種下死因。"),
+    (X, "person_wu_shenxian", "patron", "相面", "冰鑑定終身。"),
+    ("person_li_pinger", "person_pan_daoshi", "patron", "禳解", "法遣黃巾力士。"),
+    ("person_li_pinger", "person_huang_zhenren", "patron", "薦亡", "發牒薦亡。"),
+    ("person_li_pinger", "person_ren_yiguan", "patron", "診病", "任醫官屢次診治。"),
+    ("person_li_pinger", "person_hu_taiyi", "patron", "誤診", "胡太醫用藥不對症。"),
+    ("person_wu_yueniang", "person_wang_guzi", "patron", "求子", "王姑子替月娘求子。"),
+    ("person_wu_yueniang", "person_xue_guzi", "patron", "宣卷", "薛姑子佛口談經。"),
+    ("person_wang_guzi", "person_xue_guzi", "conflict", "爭施主", "兩尼爭奪西門府香火。"),
+    ("person_xiaoge", "person_pujing", "kin", "師徒", "普靜幻度孝哥兒出家。"),
+    ("person_chen_jingji", "person_ren_daoshi", "kin", "師徒", "敬濟拜任道士為師。"),
+    ("person_chen_jingji", "person_wang_xingan", "ally", "義助", "王杏庵義恤貧兒。"),
+    ("person_chen_jingji", "person_liu_er", "conflict", "毆鬥", "劉二大酒樓撒潑。"),
+    ("person_wang_liuer", "person_liu_er", "conflict", "醉罵", "劉二醉罵王六兒。"),
+
+    # ---- 媒婆牙婆 --------------------------------------------------------
+    (X, "person_xue_sao", "ally", "說媒", "說娶孟玉樓、賣春梅。"),
+    ("person_meng_yulou", "person_xue_sao", "ally", "說媒", "薛嫂做媒。"),
+    ("person_meng_yulou", "person_tao_mama", "ally", "說媒", "陶媽媽說合改嫁李衙內。"),
+    ("person_pang_chunmei", "person_xue_sao", "ally", "發賣", "月娘令薛嫂賣春梅。"),
+
+    # ---- 妓院 ------------------------------------------------------------
+    ("person_li_guijie", "person_li_sanma", "kin", "母女", "李三媽為麗春院鴇母。"),
+    ("person_li_guijie", "person_li_guiqing", "kin", "姊妹", "桂卿為桂姐之姊。"),
+    ("person_li_guijie", "person_wu_yueniang", "kin", "乾母女", "桂姐拜月娘為乾娘。"),
+    ("person_zheng_aiyue", "person_zheng_aixiang", "kin", "姊妹", "鄭家姊妹同在院中。"),
+    ("person_zheng_aiyue", "person_wang_sanguan", "romance", "往來", "巧施連環計。"),
+]
