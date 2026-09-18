@@ -39,6 +39,8 @@ INDEX = [
      '<button type="button" class="legend-badge" data-tag="motif" data-tag-state="background"><span class="swatch tag-motif"></span>意象</button>'),
 
     # ---- 導覽列加上「延伸閱讀」----
+    ('<button data-view="coGraph">共現圖</button>',
+     '<button data-view="coGraph">共現圖</button>\n    <button data-view="people">人物列表</button>'),
     ('<button data-view="stats">統計</button>',
      '<button data-view="stats">統計</button>\n    <button data-view="articles">延伸閱讀</button>'),
 
@@ -67,6 +69,29 @@ INDEX = [
     ('title="紅樓夢人物社會網絡"', 'title="金瓶梅人物社會網絡"'),
     ('title="紅樓夢實體共現圖"', 'title="金瓶梅實體共現圖"'),
 
+    # ---- 人物列表頁 ----
+    ("""  <section id="stats" class="view">""",
+     """  <section id="people" class="view">
+    <article class="content">
+      <h2>人物列表</h2>
+      <p class="meta">詞表收錄的全部人物。點任一人可跳到瀏覽頁，看他的簡介、表記、共現與出處段落。</p>
+      <div class="people-controls">
+        <input id="peopleSearch" placeholder="搜尋人名、別名或簡介，例如 妓女、守備、丫鬟">
+        <select id="peopleSubtype" aria-label="身分"></select>
+        <select id="peopleFamily" aria-label="陣營"></select>
+        <select id="peopleSort" aria-label="排序">
+          <option value="frequency">依出現次數</option>
+          <option value="chapter">依出場回數</option>
+          <option value="name">依名稱</option>
+        </select>
+      </div>
+      <p id="peopleCount" class="meta"></p>
+      <div id="peopleList" class="people-grid"></div>
+    </article>
+  </section>
+
+  <section id="stats" class="view">"""),
+
     # ---- 統計頁區塊標題 ----
     ('<h2>意象統計</h2><div id="motifStats"></div>',
      '<h2>意象統計</h2><div id="motifStats"></div>\n      <h2>關係與陣營</h2><div id="relationStats"></div>'),
@@ -87,9 +112,20 @@ INDEX = [
     # ---- 載入延伸閱讀 ----
     ("""  if (viewId === 'stats') await ensureStats();""",
      """  if (viewId === 'stats') await ensureStats();
+  if (viewId === 'people') await ensurePeople();
   if (viewId === 'articles') await ensureArticles();"""),
     ("""function showLoadError(err) {""",
-     """async function ensureArticles() {
+     """async function ensurePeople() {
+  if (state.peopleReady) return;
+  [state.entityIndex, state.ebook] = await Promise.all([
+    state.entityIndex ? Promise.resolve(state.entityIndex) : loadJson('data/basic_entity_index.json'),
+    state.ebook ? Promise.resolve(state.ebook) : loadJson('data/ebook.json')
+  ]);
+  initPeople();
+  state.peopleReady = true;
+}
+
+async function ensureArticles() {
   if (state.articlesReady) return;
   state.articles = await loadJson('data/articles.json');
   initArticles();
@@ -219,6 +255,55 @@ function zhRelation(v) { return relationLabels[v] || v || '其他'; }"""),
   const relations = (s.relation_summary || []).map((row, i) => ({label: zhRelation(row.relation_type), value: num(row.count), color: chartColors[i % chartColors.length]}));
   const families = (s.family_summary || []).map(row => ({label: zhFamily(row.family), value: num(row.total_occurrences)}));
   $('#relationStats').innerHTML = `<div class="chart-grid">${chartPanel('語義關係類型占比', donutChart(relations), '人工整理的確定關係，與同段共現不同。')}${chartPanel('各陣營出現次數', barChart(families, {color:'#7c3aed'}), '依人物所屬家族／陣營彙總其出現次數。')}</div>`;
+}
+function peopleRows() {
+  return Object.values(state.entityIndex.entities)
+    .filter(e => e.entity_type === 'PERSON')
+    .map(e => ({...e, subtypeZh: zhSubtype(e.subtype), familyZh: zhFamily(e.family)}));
+}
+function initPeople() {
+  const rows = peopleRows();
+  const fill = (sel, values, label) => {
+    const seen = [...new Set(values)].sort((a, b) => a.localeCompare(b, 'zh-Hant'));
+    $(sel).innerHTML = `<option value="">${label}</option>` +
+      seen.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  };
+  fill('#peopleSubtype', rows.map(r => r.subtypeZh), '全部身分');
+  fill('#peopleFamily', rows.map(r => r.familyZh), '全部陣營');
+  ['#peopleSearch', '#peopleSubtype', '#peopleFamily', '#peopleSort']
+    .forEach(sel => $(sel).addEventListener('input', renderPeople));
+  $('#peopleList').addEventListener('click', async e => {
+    const card = e.target.closest('[data-person]');
+    if (!card) return;
+    await switchView('reader');
+    showEntity(card.dataset.person);
+  });
+  renderPeople();
+}
+function renderPeople() {
+  const q = $('#peopleSearch').value.trim();
+  const sub = $('#peopleSubtype').value;
+  const fam = $('#peopleFamily').value;
+  const rows = peopleRows().filter(r =>
+    (!sub || r.subtypeZh === sub) && (!fam || r.familyZh === fam) &&
+    (!q || r.label.includes(q) || (r.bio || '').includes(q) ||
+     r.surface_forms.some(f => f.includes(q))));
+  const order = {
+    frequency: (a, b) => b.frequency - a.frequency,
+    chapter: (a, b) => b.chapter_count - a.chapter_count || b.frequency - a.frequency,
+    name: (a, b) => a.label.localeCompare(b.label, 'zh-Hant')
+  };
+  rows.sort(order[$('#peopleSort').value] || order.frequency);
+  $('#peopleCount').textContent = `共 ${rows.length} 人`;
+  $('#peopleList').innerHTML = rows.map(r => {
+    const alias = r.surface_forms.filter(f => f !== r.label);
+    return `<button type="button" class="person-card" data-person="${esc(r.key)}">
+      <span class="person-head"><span class="person-name">${esc(r.label)}</span>
+      <span class="person-tag">${esc(r.subtypeZh)}</span><span class="person-tag">${esc(r.familyZh)}</span></span>
+      <span class="person-meta">出現 ${r.frequency} 次｜段落 ${r.paragraph_count} 段｜章回 ${r.chapter_count} 回${alias.length ? `｜又作 ${esc(alias.join('、'))}` : ''}</span>
+      ${r.bio ? `<span class="person-bio">${esc(r.bio)}</span>` : ''}
+    </button>`;
+  }).join('') || '<p class="meta">沒有符合的人物。</p>';
 }
 function initArticles() {"""),
 ]
@@ -417,6 +502,20 @@ CSS = [
     ("    .chapter-end { border: 0;",
      """    #readerContent p.para-verse { white-space: pre-wrap; text-indent: 0; margin-left: 2em; color: #334155; }
     .entity-bio { margin: 10px 0 4px; font-size: 13px; line-height: 1.7; color: #334155; border-left: 3px solid #fecdd3; padding-left: 10px; }
+    #people.view.active { display: block; }
+    #people .content { max-width: 1040px; margin: 0 auto; }
+    .people-controls { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0 12px; }
+    .people-controls input, .people-controls select { padding: 9px 11px; }
+    .people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 40px; }
+    .person-card { display: grid; gap: 6px; text-align: left; font: inherit; border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 12px 14px; cursor: pointer; }
+    .person-card:hover { border-color: #f9a8b4; background: #fffafb; }
+    .person-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .person-name { font-family: "Noto Serif TC","Songti TC","PingFang TC","Microsoft JhengHei",serif; font-size: 19px; color: #1f2328; }
+    .person-tag { border: 1px solid #e5e7eb; border-radius: 999px; padding: 1px 8px; font-size: 12px; color: #64748b; }
+    .person-meta { font-size: 12px; line-height: 1.6; color: #64748b; }
+    .person-bio { font-size: 13px; line-height: 1.7; color: #334155; }
+    @media (max-width: 1024px) { .people-controls { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .people-controls { grid-template-columns: 1fr; } }
     .chapter-end { border: 0;"""),
 ]
 

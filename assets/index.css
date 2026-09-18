@@ -98,6 +98,20 @@
     }
     #readerContent p.para-verse { white-space: pre-wrap; text-indent: 0; margin-left: 2em; color: #334155; }
     .entity-bio { margin: 10px 0 4px; font-size: 13px; line-height: 1.7; color: #334155; border-left: 3px solid #fecdd3; padding-left: 10px; }
+    #people.view.active { display: block; }
+    #people .content { max-width: 1040px; margin: 0 auto; }
+    .people-controls { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0 12px; }
+    .people-controls input, .people-controls select { padding: 9px 11px; }
+    .people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 40px; }
+    .person-card { display: grid; gap: 6px; text-align: left; font: inherit; border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 12px 14px; cursor: pointer; }
+    .person-card:hover { border-color: #f9a8b4; background: #fffafb; }
+    .person-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .person-name { font-family: "Noto Serif TC","Songti TC","PingFang TC","Microsoft JhengHei",serif; font-size: 19px; color: #1f2328; }
+    .person-tag { border: 1px solid #e5e7eb; border-radius: 999px; padding: 1px 8px; font-size: 12px; color: #64748b; }
+    .person-meta { font-size: 12px; line-height: 1.6; color: #64748b; }
+    .person-bio { font-size: 13px; line-height: 1.7; color: #334155; }
+    @media (max-width: 1024px) { .people-controls { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .people-controls { grid-template-columns: 1fr; } }
     .chapter-end { border: 0; border-top: 1px solid #d0d7de; margin: 34px 0 18px; }
     .chapter-nav { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 42px; font-family: "Noto Serif TC","Songti TC","PingFang TC","Microsoft JhengHei",serif; }
     .chapter-nav a { color: #64748b; text-decoration: none; max-width: 46%; line-height: 1.55; }

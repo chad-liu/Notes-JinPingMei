@@ -22,6 +22,7 @@
     <button data-view="search" class="active">查詢</button>
     <button data-view="network">人物關係圖</button>
     <button data-view="coGraph">共現圖</button>
+    <button data-view="people">人物列表</button>
     <button data-view="stats">統計</button>
     <button data-view="articles">延伸閱讀</button>
   </nav>
@@ -87,6 +88,25 @@
 
   <section id="coGraph" class="view">
     <iframe class="graph-frame" src="cooccurrence_graph.html" title="金瓶梅實體共現圖"></iframe>
+  </section>
+
+  <section id="people" class="view">
+    <article class="content">
+      <h2>人物列表</h2>
+      <p class="meta">詞表收錄的全部人物。點任一人可跳到瀏覽頁，看他的簡介、表記、共現與出處段落。</p>
+      <div class="people-controls">
+        <input id="peopleSearch" placeholder="搜尋人名、別名或簡介，例如 妓女、守備、丫鬟">
+        <select id="peopleSubtype" aria-label="身分"></select>
+        <select id="peopleFamily" aria-label="陣營"></select>
+        <select id="peopleSort" aria-label="排序">
+          <option value="frequency">依出現次數</option>
+          <option value="chapter">依出場回數</option>
+          <option value="name">依名稱</option>
+        </select>
+      </div>
+      <p id="peopleCount" class="meta"></p>
+      <div id="peopleList" class="people-grid"></div>
+    </article>
   </section>
 
   <section id="stats" class="view">
@@ -175,6 +195,7 @@ async function switchView(viewId) {
   if (viewId === 'reader') await ensureReader();
   if (viewId === 'search') await ensureSearch();
   if (viewId === 'stats') await ensureStats();
+  if (viewId === 'people') await ensurePeople();
   if (viewId === 'articles') await ensureArticles();
   document.querySelectorAll('header nav button').forEach(b => b.classList.toggle('active', b.dataset.view === viewId));
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === viewId));
@@ -212,6 +233,16 @@ async function ensureStats() {
   state.stats = await loadJson('data/statistics.json');
   initStats();
   state.statsReady = true;
+}
+
+async function ensurePeople() {
+  if (state.peopleReady) return;
+  [state.entityIndex, state.ebook] = await Promise.all([
+    state.entityIndex ? Promise.resolve(state.entityIndex) : loadJson('data/basic_entity_index.json'),
+    state.ebook ? Promise.resolve(state.ebook) : loadJson('data/ebook.json')
+  ]);
+  initPeople();
+  state.peopleReady = true;
 }
 
 async function ensureArticles() {
@@ -799,6 +830,55 @@ function renderRelationStats(s) {
   const relations = (s.relation_summary || []).map((row, i) => ({label: zhRelation(row.relation_type), value: num(row.count), color: chartColors[i % chartColors.length]}));
   const families = (s.family_summary || []).map(row => ({label: zhFamily(row.family), value: num(row.total_occurrences)}));
   $('#relationStats').innerHTML = `<div class="chart-grid">${chartPanel('語義關係類型占比', donutChart(relations), '人工整理的確定關係，與同段共現不同。')}${chartPanel('各陣營出現次數', barChart(families, {color:'#7c3aed'}), '依人物所屬家族／陣營彙總其出現次數。')}</div>`;
+}
+function peopleRows() {
+  return Object.values(state.entityIndex.entities)
+    .filter(e => e.entity_type === 'PERSON')
+    .map(e => ({...e, subtypeZh: zhSubtype(e.subtype), familyZh: zhFamily(e.family)}));
+}
+function initPeople() {
+  const rows = peopleRows();
+  const fill = (sel, values, label) => {
+    const seen = [...new Set(values)].sort((a, b) => a.localeCompare(b, 'zh-Hant'));
+    $(sel).innerHTML = `<option value="">${label}</option>` +
+      seen.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  };
+  fill('#peopleSubtype', rows.map(r => r.subtypeZh), '全部身分');
+  fill('#peopleFamily', rows.map(r => r.familyZh), '全部陣營');
+  ['#peopleSearch', '#peopleSubtype', '#peopleFamily', '#peopleSort']
+    .forEach(sel => $(sel).addEventListener('input', renderPeople));
+  $('#peopleList').addEventListener('click', async e => {
+    const card = e.target.closest('[data-person]');
+    if (!card) return;
+    await switchView('reader');
+    showEntity(card.dataset.person);
+  });
+  renderPeople();
+}
+function renderPeople() {
+  const q = $('#peopleSearch').value.trim();
+  const sub = $('#peopleSubtype').value;
+  const fam = $('#peopleFamily').value;
+  const rows = peopleRows().filter(r =>
+    (!sub || r.subtypeZh === sub) && (!fam || r.familyZh === fam) &&
+    (!q || r.label.includes(q) || (r.bio || '').includes(q) ||
+     r.surface_forms.some(f => f.includes(q))));
+  const order = {
+    frequency: (a, b) => b.frequency - a.frequency,
+    chapter: (a, b) => b.chapter_count - a.chapter_count || b.frequency - a.frequency,
+    name: (a, b) => a.label.localeCompare(b.label, 'zh-Hant')
+  };
+  rows.sort(order[$('#peopleSort').value] || order.frequency);
+  $('#peopleCount').textContent = `共 ${rows.length} 人`;
+  $('#peopleList').innerHTML = rows.map(r => {
+    const alias = r.surface_forms.filter(f => f !== r.label);
+    return `<button type="button" class="person-card" data-person="${esc(r.key)}">
+      <span class="person-head"><span class="person-name">${esc(r.label)}</span>
+      <span class="person-tag">${esc(r.subtypeZh)}</span><span class="person-tag">${esc(r.familyZh)}</span></span>
+      <span class="person-meta">出現 ${r.frequency} 次｜段落 ${r.paragraph_count} 段｜章回 ${r.chapter_count} 回${alias.length ? `｜又作 ${esc(alias.join('、'))}` : ''}</span>
+      ${r.bio ? `<span class="person-bio">${esc(r.bio)}</span>` : ''}
+    </button>`;
+  }).join('') || '<p class="meta">沒有符合的人物。</p>';
 }
 function initArticles() {
   $('#articleList').innerHTML = state.articles.articles.map(a => {
